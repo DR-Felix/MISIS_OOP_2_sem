@@ -1,74 +1,72 @@
-// Copyright 2023 by Polevoy Dmitry under Free Public License 1.0.0
-
-#pragma once
-#ifndef RATIONAL_RATIONAL_HPP_20230215
-#define RATIONAL_RATIONAL_HPP_20230215
-
 #include <iosfwd>
-#include <cstdint>
+#include <exception>
+#include <stdexcept>
+#include "cstdint"
+
+int32_t GCD(int32_t a, int32_t b);
 
 class Rational {
-  public:
-    Rational() = default;
-    Rational(const Rational&) = default;
-    Rational(Rational&&) = default;
-    Rational(const int32_t num) noexcept ;
-    Rational(const int32_t num, const int32_t denom);
-    ~Rational() = default;
-    Rational& operator=(const Rational&) = default;
-    Rational& operator=(Rational&&) = default;
 
-    int32_t num() const noexcept { return num_; }
-    int32_t denom() const noexcept { return den_; }
+public:
+    Rational() = default; //конструктор со значениями по умолчанию
+    Rational(const Rational&) = default; //конструктор копирования со значением по умолчанию
+    explicit Rational(const int32_t num_) noexcept;
+    Rational(const int32_t num_, const int32_t denum_); //еще один конструктор по умолчанию с двумя входными значениями
+    ~Rational() = default; //деструктор для чистки конструктора после завершения программы во избежание утечек памяти
 
-    bool operator==(const Rational& ) const noexcept;
-    bool operator!=(const Rational& ) const noexcept;
-    bool operator>(const Rational& ) const noexcept;
-    bool operator<(const Rational& ) const noexcept;
-    bool operator>=(const Rational& ) const noexcept;
-    bool operator<=(const Rational& ) const noexcept;
 
-    Rational operator-() const noexcept;
+    bool operator==(const Rational& rhs) const;
+    bool operator!=(const Rational& rhs) const;
 
-    explicit operator bool() const noexcept;
+    Rational operator+=(const Rational& rhs);
+    Rational operator-=(const Rational& rhs);
+    Rational operator*=(const Rational& rhs);
+    Rational operator/=(const Rational& rhs);
 
-    Rational& operator*=(const Rational& rhs) noexcept;
+    Rational operator+=(const int32_t& rhs);
+    Rational operator-=(const int32_t& rhs);
+    Rational operator/=(const int32_t& rhs);
+    Rational operator*=(const int32_t& rhs);
 
-    Rational& operator+=(const Rational& rhs) noexcept;
+    std::istream& readFrom(std::istream& istrm);
+    std::ostream& writeTo(std::ostream& ostrm) const noexcept; //const, поскольку нам нужен только вывод
 
-    Rational& operator-=(const Rational& rhs) noexcept;
+    bool operator>(const Rational& rhs) const;
 
-    Rational& operator/=(const Rational& rhs);
+private: //в данном случае ставим параметры по умолчанию, которые пользователь изменить не сможет
+    int32_t num{ 0 }; //числитель
+    int32_t denum{ 1 }; //знаменатель
+    static const char separator{ '/' }; //формат - черта дроби
 
-    std::istream& read_from(std::istream& istrm) noexcept;
-    std::ostream& write_to(std::ostream& ostrm) const noexcept;
-
-  private:
-    int32_t num_ = 0;
-    int32_t den_ = 1;
-    static const char delimiter_ = '/';
-  private:
-    void normalize() noexcept;
 };
 
-std::istream &operator>>(std::istream& istrm, Rational& rhs) noexcept;
+Rational operator+(const Rational& lhs, const Rational& rhs);
+Rational operator-(const Rational& lhs, const Rational& rhs);
+Rational operator*(const Rational& lhs, const Rational& rhs);
+Rational operator/(const Rational& lhs, const Rational& rhs);
 
-std::ostream &operator<<(std::ostream& ostrm, const Rational& rhs) noexcept;
+Rational operator+(const Rational& lhs, const int32_t& rhs);
+Rational operator-(const Rational& lhs, const int32_t& rhs);
+Rational operator*(const Rational& lhs, const int32_t& rhs);
+Rational operator/(const Rational& lhs, const int32_t& rhs);
 
-inline Rational operator+(const Rational& lhs, const Rational& rhs) noexcept {
-  return Rational(lhs) += rhs;
-}
+Rational& operator++(Rational& lhs);
+Rational& operator--(Rational& lhs);
+Rational operator++(Rational& lhs, int);
+Rational operator--(Rational& lhs, int);
 
-inline Rational operator-(const Rational& lhs, const Rational& rhs) noexcept {
-  return Rational(lhs) -= rhs;
-}
+Rational operator-(const Rational& rhs);
 
-inline Rational operator/(const Rational& lhs, const Rational& rhs) {
-  return Rational(lhs) /= rhs;
-}
+std::ostream& operator<<(std::ostream& ostrm, const Rational& rhs);
+std::istream& operator>>(std::istream& istrm, Rational& rhs);
 
-inline Rational operator*(const Rational& lhs, const Rational& rhs) noexcept {
-  return Rational(lhs) *= rhs;
-}
+bool operator<(const Rational& lhs, const Rational& rhs);
+bool operator<=(const Rational& lhs, const Rational& rhs);
+bool operator>=(const Rational& lhs, const Rational& rhs);
 
-#endif
+bool operator==(const Rational& lhs, const int32_t& rhs);
+bool operator!=(const Rational& lhs, const int32_t& rhs);
+bool operator>(const Rational& lhs, const int32_t& rhs);
+bool operator<(const Rational& lhs, const int32_t& rhs);
+bool operator<=(const Rational& lhs, const int32_t& rhs);
+bool operator>=(const Rational& lhs, const int32_t& rhs);
