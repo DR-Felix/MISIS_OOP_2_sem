@@ -1,39 +1,66 @@
-#include <initializer_list>
-#include <cstddef>
-#include "iosfwd"
+#include <iosfwd>
 
+class ArrayD {
 
-class ArrayD
-{
 public:
-
-    ArrayD(int s = 0); //умолчательные конструкторы
+    /**
+     * \detail создает массив размера size, заполненого элементами со значнием по умолчанию.
+     *         если size = 0 аллокации памяти не происходит
+     * \param[in] size размер массива
+     * \throw std::invalid_argument если size < 0
+     */
+    explicit ArrayD(const std::ptrdiff_t size = 0);
     ArrayD(const ArrayD& other);
-    ArrayD(std::initializer_list<double> list);
     ArrayD& operator=(const ArrayD& other);
 
-    ArrayD(ArrayD&& other);
+    ArrayD(ArrayD&& other) noexcept; //копирование
 
-    ~ArrayD() = default; //деструктор
+    ~ArrayD(); //деструктор
+    /**
+     * \brief Доступ к элементам по индексу
+     * \param[in] i индекс возвращаемого элемента
+     * \return i-тый элемент
+     * \throw std::out_of_range если индекс вне диапазона [0, size)
+     */
+    [[nodiscard]] double& operator[](const std::ptrdiff_t i);
+    [[nodiscard]] const double& operator[](const std::ptrdiff_t i) const;
 
-    double& operator[](int iter) const; //Оператор итерирования
+    /**
+     * \return текущий размер массива
+     */
+    [[nodiscard]] std::ptrdiff_t ssize() const noexcept;
 
-    ptrdiff_t ssize() const; //Взятие размера, ptrdiff_t - беззнаковый целочисленный тип, исмпользуемый для записи максимально возможного
-                            //размера любого массива, безопасно может быть помещен указатель (см. конфликт с машинным словом)
+    /**
+     * \brief Изменение размера массива
+     * \param[in] new_size новый размер массива
+     * \throw std::invalid_argument если входной параметр new_size <= 0
+     */
+    void resize(const std::ptrdiff_t new_size);
 
-    void resize(const int& size); //изменение размера
-    void insert(const int& i, const double& elem); //добавить элемент
-    void remove(const int& i); //удалить элемент
+    /**
+     * \brief Вставляет элемент. если размера недостаточно, делает resize
+     * \param[in] i индекс элемента, который будет добавлен
+     * \param[in] value значение, которое надо добавить
+     * \throw std::out_of_range если индекс вне диапазона [0, size]
+     */
+    void insert(const std::ptrdiff_t i, const double& value);
 
-    std::istream& ReadFrom(std::istream& istrm); //ввод
-    std::ostream& WriteTo(std::ostream& ostrm); //вывод
+    /**
+     * \brief Удаляет элемент по индексу i
+     * \param[in] i индекс удаляемого элемента
+     * \throw std::out_of_range если индекс вне диапазона [0, size)
+     */
+    void remove(const std::ptrdiff_t i);
 
+    //Ввод/вывод
+    std::istream& ReadFrom(std::istream& istrm);
+    std::ostream& WriteTo(std::ostream& ostrm);
 
 private:
-    double *data = nullptr; //nullptr - нулевой указатель, по большей мере для сохранности и чистки адреса
-    ptrdiff_t ssize_ = 0; //размер массива
+    std::ptrdiff_t ssize_{ 0 };
+    std::ptrdiff_t capacity_{ 0 };
+    double* data_{ nullptr };
 };
 
 std::ostream& operator<<(std::ostream& ostrm, ArrayD& array);
-std::istream& operator>>(std::istream& istrm, ArrayD& array); 
-
+std::istream& operator>>(std::istream& istrm, ArrayD& array);
