@@ -1,4 +1,6 @@
-#include <iostream>
+#include <cstdint>
+#include <iosfwd>
+#include <tuple>
 
 class MatrixS {
 public:
@@ -45,4 +47,8 @@ public:
      * \return количество столбцов в матрице (n)
      */
     [[nodiscard]] std::ptrdiff_t nCols() const noexcept;
+
+private:
+    int* data_ = nullptr;
+    SizeType size_{ 0,0 };
 };
