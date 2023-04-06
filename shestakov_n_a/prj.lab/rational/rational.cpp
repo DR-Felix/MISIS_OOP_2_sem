@@ -1,13 +1,13 @@
 #include <iostream>
 #include <sstream>
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 #include <rational/rational.hpp>
 
 Rational::Rational(const int32_t num_, const int32_t denum_) {
-    if (denum == 0) {
-        throw std::exception("DIVISION BY ZERO");
+    if (denum_ == 0) {
+        throw std::invalid_argument("division by zero");
     }
     int32_t d = GCD(num_, denum_);
     num = num_/d;
@@ -52,22 +52,22 @@ std::istream& operator>>(std::istream& istrm, Rational& rhs)
 }                                                                   //везде используем ссылки, ибо нам не нужно копировать объекты, мы работаем с тем, что есть
 
 std::istream& Rational::readFrom(std::istream& istrm) { //создаем временные переменные separator_, num_, denum_
-    char separator_(0);
+    char separator_;
     int32_t num_(0);
-    int32_t denum_(0);
-    istrm >> num_ >> separator_ >> denum_; //istrm - ссылка на поток чтения, поскольку потоки не копируются
-    if (istrm.good() || istrm.eof() && !istrm.fail()) {
-        if (Rational::separator == separator_) {
-            istrm.clear();
-            *this = Rational(num_, denum_);
-            if (denum < 0) {
-                denum *= -1;
-                num *= -1;
-            }
-        }
-        else {
-            istrm.setstate(std::ios_base::failbit);
-        }
+    int32_t denum_(1);
+    char test;
+    istrm >> num_;
+    test = istrm.peek();
+    if (test != '/') istrm.setstate(std::ios_base::failbit);
+    istrm >> separator_;
+    test = istrm.peek();
+    if (test == ' ') istrm.setstate(std::ios_base::failbit);
+    istrm >> denum_;
+    if (!istrm.bad() && !istrm.fail() && (denum_ >= 0)) {
+        *this = Rational(num_, denum_);
+    }
+    else {
+        istrm.setstate(std::ios_base::failbit);
     }
     return istrm;
 }
