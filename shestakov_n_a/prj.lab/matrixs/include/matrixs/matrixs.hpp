@@ -1,6 +1,11 @@
-#include <cstdint>
-#include <iosfwd>
-#include <tuple>
+#pragma once
+#ifndef MATRIXS_MATRIXS_HPP_20230317
+#define MATRIXS_MATRIXS_HPP_20230317
+
+#include <sstream>
+#include <vector>
+
+const std::exception out_of_range("Error: Not valid index");
 
 class MatrixS {
 public:
@@ -9,10 +14,13 @@ public:
 public:
     explicit MatrixS(const SizeType& size = { 0, 0 });
     MatrixS(const std::ptrdiff_t m, const std::ptrdiff_t n);
-    ~MatrixS();
+    ~MatrixS() { delete[] data_; }
 
-    MatrixS(const MatrixS& other);
+    MatrixS(const MatrixS& other) = default;
+
     MatrixS& operator=(const MatrixS& other);
+
+    MatrixS(const MatrixS& mat);
 
     /**
      * \brief Возвращает элемент матрицы под индексами {i, j}
@@ -36,7 +44,9 @@ public:
     /**
      * \return текущий размер матрицы {m, n}
      */
-    [[nodiscard]] const SizeType& ssize() const noexcept;
+    [[nodiscard]] const SizeType& ssize() const noexcept {
+        return size_;
+    }
 
     /**
      * \return количество строк в матрице (m)
@@ -52,3 +62,5 @@ private:
     int* data_ = nullptr;
     SizeType size_{ 0,0 };
 };
+
+#endif
