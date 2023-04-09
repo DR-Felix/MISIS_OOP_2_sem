@@ -143,13 +143,3 @@ TEST_CASE("Test of ssize, resize, insert, remove function") {
         CHECK_THROWS(test_i.remove(4));
     }
 }
-//A ar;
-//new size == 0
-//index - 0 +
-//resize
-//size == new ssize
-//new elem ==
-//index - 0+
-//a[index] = elem and then a[index] == elem
-//and this with every
-//empty to array
