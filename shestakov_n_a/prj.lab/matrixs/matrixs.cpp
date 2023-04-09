@@ -124,3 +124,12 @@ void MatrixS::resize(std::ptrdiff_t nRows, ptrdiff_t nCols) {
     std::get<1>(size_) = nCols;
     delete[] old;
 }
+
+MatrixS::MatrixS(const MatrixS& mat) {
+    std::get<0>(size_) = mat.nRows();
+    std::get<0>(size_) = mat.nCols();
+    data_ = new int32_t[std::get<0>(size_) * std::get<0>(size_)];
+    for (std::ptrdiff_t i = 0; i < std::get<0>(size_) * std::get<0>(size_); i++) {
+        data_[i] = mat.data_[i];
+    }
+}
