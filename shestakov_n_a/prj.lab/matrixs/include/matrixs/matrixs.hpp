@@ -1,9 +1,11 @@
 #pragma once
-#ifndef MATRIXS_MATRIXS_HPP_20230317
-#define MATRIXS_MATRIXS_HPP_20230317
 
-#include <sstream>
-#include <vector>
+#ifndef MATRIXS_HPP
+#define MATRIXS_HPP
+
+#include <cstdint>
+#include <iosfwd>
+#include <tuple>
 
 const std::exception out_of_range("Error: Not valid index");
 
@@ -16,11 +18,9 @@ public:
     MatrixS(const std::ptrdiff_t m, const std::ptrdiff_t n);
     ~MatrixS() { delete[] data_; }
 
-    MatrixS(const MatrixS& other) = default;
+    MatrixS(const MatrixS& mat);
 
     MatrixS& operator=(const MatrixS& other);
-
-    MatrixS(const MatrixS& mat);
 
     /**
      * \brief Возвращает элемент матрицы под индексами {i, j}
@@ -44,9 +44,7 @@ public:
     /**
      * \return текущий размер матрицы {m, n}
      */
-    [[nodiscard]] const SizeType& ssize() const noexcept {
-        return size_;
-    }
+    [[nodiscard]] const SizeType& ssize() const noexcept;
 
     /**
      * \return количество строк в матрице (m)
