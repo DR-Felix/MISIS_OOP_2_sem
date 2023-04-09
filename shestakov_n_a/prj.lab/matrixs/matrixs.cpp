@@ -26,15 +26,6 @@ MatrixS::MatrixS(const std::ptrdiff_t m, const std::ptrdiff_t n) {
     }
 }
 
-MatrixS::MatrixS(const MatrixS& other) {
-    std::get<0>(size_) = other.nRows();
-    std::get<1>(size_) = other.nCols();
-    data_ = new int[std::get<0>(size_) * std::get<1>(size_)];
-    for (int i = 0; i < std::get<0>(size_) * std::get<1>(size_); i++) {
-        data_[i] = other.at(i / std::get<1>(size_), i % std::get<0>(size_));
-    }
-}
-
 MatrixS& MatrixS::operator=(const MatrixS& other) {
     delete[] data_;
     std::get<0>(size_) = other.nRows();
