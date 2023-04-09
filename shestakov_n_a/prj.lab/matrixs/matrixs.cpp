@@ -27,12 +27,23 @@ MatrixS::MatrixS(const std::ptrdiff_t m, const std::ptrdiff_t n) {
 }
 
 MatrixS& MatrixS::operator=(const MatrixS& other) {
+    if (other.data_ == data_) {
+        throw std::invalid_argument("You can't use operator= with same MatrixS");
+    }
+    size_ = other.size_;
     delete[] data_;
-    std::get<0>(size_) = other.nRows();
-    std::get<1>(size_) = other.nCols();
     data_ = new int[std::get<0>(size_) * std::get<1>(size_)];
     for (int i = 0; i < std::get<0>(size_) * std::get<1>(size_); i++) {
         data_[i] = other.at(i / std::get<1>(size_), i % std::get<1>(size_));
+    }
+}
+
+MatrixS::MatrixS(const MatrixS& mat) {
+    std::get<0>(size_) = mat.nRows();
+    std::get<0>(size_) = mat.nCols();
+    data_ = new int32_t[std::get<0>(size_) * std::get<0>(size_)];
+    for (std::ptrdiff_t i = 0; i < std::get<0>(size_) * std::get<0>(size_); i++) {
+        data_[i] = mat.data_[i];
     }
 }
 
@@ -68,6 +79,7 @@ MatrixS& MatrixS::operator=(const MatrixS& other) {
 [[nodiscard]] const MatrixS::SizeType& MatrixS::ssize() const noexcept {
     return size_;
 }
+
 [[nodiscard]] std::ptrdiff_t MatrixS::nRows() const noexcept {
     return std::get<0>(size_);
 }
@@ -114,13 +126,4 @@ void MatrixS::resize(std::ptrdiff_t nRows, ptrdiff_t nCols) {
     std::get<0>(size_) = nRows;
     std::get<1>(size_) = nCols;
     delete[] old;
-}
-
-MatrixS::MatrixS(const MatrixS& mat) {
-    std::get<0>(size_) = mat.nRows();
-    std::get<0>(size_) = mat.nCols();
-    data_ = new int32_t[std::get<0>(size_) * std::get<0>(size_)];
-    for (std::ptrdiff_t i = 0; i < std::get<0>(size_) * std::get<0>(size_); i++) {
-        data_[i] = mat.data_[i];
-    }
 }
