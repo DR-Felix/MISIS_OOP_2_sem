@@ -1,129 +1,104 @@
 #include <matrixs/matrixs.hpp>
-#include <stdexcept>
-#include <tuple>
 
-MatrixS::MatrixS(const SizeType& size) {
-    if (std::get<0>(size) < 0 || std::get<1>(size) < 0) { 
-        throw std::invalid_argument("invalid size"); 
-    }
-    std::get<0>(size_) = std::get<0>(size);
-    std::get<1>(size_) = std::get<1>(size);
-    data_ = new int[std::get<0>(size_) * std::get<1>(size_)];
-    for (int i = 0; i < std::get<0>(size_) * std::get<1>(size_); i++) {
-        data_[i] = 0;
-    }
+MatrixS::MatrixS(const std::ptrdiff_t row_count, const std::ptrdiff_t col_count) {
+	if (col_count < 0 || row_count < 0) {
+		throw out_of_range;
+	}
+	n_col_ = col_count;
+	n_row_ = row_count;
+
+	data_ = new int32_t[n_col_ * n_row_];
+	for (std::ptrdiff_t i = 0; i < n_col_ * n_row_; i++) {
+		data_[i] = 0;
+	}
 }
 
-MatrixS::MatrixS(const std::ptrdiff_t m, const std::ptrdiff_t n) {
-    if (m < 0 || n < 0) { 
-        throw std::invalid_argument("invalid size"); 
-    }
-    std::get<0>(size_) = m;
-    std::get<1>(size_) = n;
-    data_ = new int[std::get<0>(size_) * std::get<1>(size_)];
-    for (int i = 0; i < std::get<0>(size_) * std::get<1>(size_); i++) {
-        data_[i] = 0;
-    }
+MatrixS::MatrixS(const SizeType& size)
+{
+	if (std::get<1>(size) < 0 || std::get<0>(size) < 0) {
+		throw out_of_range;
+	}
+	n_col_ = std::get<1>(size);
+	n_row_ = std::get<0>(size);
+
+	data_ = new int32_t[n_col_ * n_row_];
+	for (std::ptrdiff_t i = 0; i < n_col_ * n_row_; i++) {
+		data_[i] = 0;
+	}
 }
 
-MatrixS& MatrixS::operator=(const MatrixS& other) {
-    if (other.data_ == data_) {
-        throw std::invalid_argument("You can't use operator= with same MatrixS");
-    }
-    size_ = other.size_;
-    delete[] data_;
-    data_ = new int[std::get<0>(size_) * std::get<1>(size_)];
-    for (int i = 0; i < std::get<0>(size_) * std::get<1>(size_); i++) {
-        data_[i] = other.at(i / std::get<1>(size_), i % std::get<1>(size_));
-    }
+int32_t& MatrixS::at(const std::ptrdiff_t i_row, const std::ptrdiff_t j_col) {
+	if (i_row < 0 || j_col < 0 || i_row >= n_row_ || j_col >= n_col_) {
+		throw out_of_range;
+	}
+	if (i_row >= n_row_ || j_col >= n_col_) {
+		throw out_of_range;
+	}
+	return data_[i_row * n_col_ + j_col];
+}
+
+int32_t& MatrixS::at(const SizeType& elem) {
+	if (std::get<0>(elem) < 0 || std::get<1>(elem) < 0) {
+		throw out_of_range;
+	}
+	if (std::get<0>(elem) >= n_row_ || std::get<1>(elem) >= n_col_) {
+		throw out_of_range;
+	}
+	return data_[std::get<0>(elem) * n_col_ + std::get<1>(elem)];
+};
+
+const int32_t& MatrixS::at(const std::ptrdiff_t i_row, const std::ptrdiff_t j_col) const {
+	if (i_row < 0 || j_col < 0) {
+		throw out_of_range;
+	}
+	if (i_row >= n_row_ || j_col >= n_col_) {
+		throw out_of_range;
+	}
+	return data_[i_row * n_col_ + j_col];
+}
+
+const int32_t& MatrixS::at(const SizeType& elem) const {
+	if (std::get<0>(elem) < 0 || std::get<1>(elem) < 0) {
+		throw out_of_range;
+	}
+	if (std::get<0>(elem) >= n_row_ || std::get<1>(elem) >= n_col_) {
+		throw out_of_range;
+	}
+	return data_[std::get<0>(elem) * n_col_ + std::get<1>(elem)];
+}
+
+void MatrixS::resize(const std::ptrdiff_t new_i, const std::ptrdiff_t new_j) {
+	if (new_i <= 0 || new_j <= 0) {
+		throw out_of_range;
+	}
+	else {
+		int32_t* new_data = new int32_t[new_i * new_j];
+		for (std::ptrdiff_t i = 0; i < new_i * new_j; i++) {
+			new_data[i] = 0;
+		}
+		for (std::ptrdiff_t i = 0; i < new_i && i < n_row_; ++i) {
+			for (std::ptrdiff_t j = 0; j < new_j && j < n_col_; ++j) {
+				new_data[i * new_j + j] = this->at(i, j);
+			}
+		}
+		n_row_ = new_i;
+		n_col_ = new_j;
+
+		delete[] data_;
+		data_ = new_data;
+		new_data = nullptr;
+	}
+}
+
+void MatrixS::resize(const SizeType& new_size) {
+	this->resize(std::get<0>(new_size), std::get<1>(new_size));
 }
 
 MatrixS::MatrixS(const MatrixS& mat) {
-    std::get<0>(size_) = mat.nRows();
-    std::get<0>(size_) = mat.nCols();
-    data_ = new int32_t[std::get<0>(size_) * std::get<0>(size_)];
-    for (std::ptrdiff_t i = 0; i < std::get<0>(size_) * std::get<0>(size_); i++) {
-        data_[i] = mat.data_[i];
-    }
-}
-
-[[nodiscard]] const int& MatrixS::at(const SizeType& indexs) const {
-    std::ptrdiff_t index_row = std::get<0>(indexs);
-    std::ptrdiff_t index_col = std::get<1>(indexs);
-    if (index_row >= std::get<0>(size_) || index_row < 0 || index_col >= std::get<1>(size_) || index_col < 0) { 
-        throw std::out_of_range("invalid index"); 
-    }
-    return data_[std::get<1>(size_) * index_row + index_col];
-}
-[[nodiscard]] int& MatrixS::at(const SizeType& indexs) {
-    std::ptrdiff_t index_row = std::get<0>(indexs);
-    std::ptrdiff_t index_col = std::get<1>(indexs);
-    if (index_row >= std::get<0>(size_) || index_row < 0 || index_col >= std::get<1>(size_) || index_col < 0) { 
-        throw std::out_of_range("invalid index"); 
-    }
-    return data_[std::get<1>(size_) * index_row + index_col];
-}
-
-[[nodiscard]] const int& MatrixS::at(const std::ptrdiff_t  index_row, const std::ptrdiff_t index_col) const {
-    if (index_row >= std::get<0>(size_) || index_row < 0 || index_col >= std::get<1>(size_) || index_col < 0) { 
-        throw std::out_of_range("invalid index"); 
-    }
-    return data_[std::get<1>(size_) * index_row + index_col];
-}
-[[nodiscard]] int& MatrixS::at(const std::ptrdiff_t index_row, const std::ptrdiff_t index_col) {
-    if (index_row >= std::get<0>(size_) || index_row < 0 || index_col >= std::get<1>(size_) || index_col < 0) { 
-        throw std::out_of_range("invalid index"); 
-    }
-    return data_[std::get<1>(size_) * index_row + index_col];
-}
-[[nodiscard]] const MatrixS::SizeType& MatrixS::ssize() const noexcept {
-    return size_;
-}
-
-[[nodiscard]] std::ptrdiff_t MatrixS::nRows() const noexcept {
-    return std::get<0>(size_);
-}
-[[nodiscard]] std::ptrdiff_t MatrixS::nCols() const noexcept {
-    return std::get<1>(size_);
-}
-
-
-void MatrixS::resize(const SizeType& size) {
-    ptrdiff_t nRows = std::get<0>(size);
-    ptrdiff_t nCols = std::get<1>(size);
-    if (nRows <= 0 || nCols <= 0) { 
-        throw std::invalid_argument("invalid size"); 
-    }
-    int* old = data_;
-    data_ = new int[nRows * nCols];
-    for (int i = 0; i < nRows * nCols; i++) { 
-        data_[i] = 0; 
-    }
-    for (int i = 0; i < std::get<0>(size_); i++) {
-        for (int j = 0; j < std::get<1>(size_); j++) {
-            data_[std::get<1>(size_) * i + j] = old[std::get<1>(size_) * i + j];
-        }
-    }
-    std::get<0>(size_) = nRows;
-    std::get<1>(size_) = nCols;
-    delete[] old;
-}
-
-void MatrixS::resize(std::ptrdiff_t nRows, ptrdiff_t nCols) {
-    if (nRows <= 0 || nCols <= 0) { 
-        throw std::invalid_argument("invalid size"); 
-    }
-    int* old = data_;
-    data_ = new int[nRows * nCols];
-    for (int i = 0; i < nRows * nCols; i++) { 
-        data_[i] = 0; 
-    }
-    for (int i = 0; i < std::get<0>(size_); i++) {
-        for (int j = 0; j < std::get<1>(size_); j++) {
-            data_[std::get<1>(size_) * i + j] = old[std::get<1>(size_) * i + j];
-        }
-    }
-    std::get<0>(size_) = nRows;
-    std::get<1>(size_) = nCols;
-    delete[] old;
+	n_row_ = mat.n_row_;
+	n_col_ = mat.n_col_;
+	data_ = new int32_t[n_col_ * n_row_];
+	for (std::ptrdiff_t i = 0; i < n_col_ * n_row_; i++) {
+		data_[i] = mat.data_[i];
+	}
 }
