@@ -21,8 +21,8 @@ public:
 
     std::ptrdiff_t nRows() const noexcept { return n_row_; }
     std::ptrdiff_t nCols() const noexcept { return n_col_; }
-    const SizeType& ssize() const noexcept { 
-        return SizeType {n_row_,n_col_}; 
+    const SizeType& ssize() const noexcept {
+        return SizeType{ n_row_,n_col_ };
     };
 
     int32_t& at(const SizeType& elem);
