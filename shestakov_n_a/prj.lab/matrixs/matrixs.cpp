@@ -102,3 +102,5 @@ MatrixS::MatrixS(const MatrixS& mat) {
 		data_[i] = mat.data_[i];
 	}
 }
+
+//
