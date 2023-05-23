@@ -1,63 +1,88 @@
-#include <opencv2/opencv.hpp>
 #include <iostream>
+#include <opencv2/opencv.hpp>
+#include <cmath>
+#include <cstdlib>
 
-cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k) {
+cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
     cv::Mat imgGray;
+
     cv::cvtColor(src, imgGray, cv::COLOR_BGR2GRAY);
 
-    cv::Mat imgThresh;
-    cv::adaptiveThreshold(imgGray, imgThresh, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, windowSize, k);
+    double scaleWidth = static_cast<double>(800) / imgGray.cols;
+    double scaleHeight = static_cast<double>(600) / imgGray.rows;
+    scale = std::min(scaleWidth, scaleHeight);
+
+    cv::Mat resizedSrc;
+    cv::resize(imgGray, resizedSrc, cv::Size(), scale, scale);
+
+    cv::Mat imgThresh(resizedSrc.size(), CV_8UC1);
+
+    int halfWindowSize = windowSize / 2;
+
+    for (int y = halfWindowSize; y < resizedSrc.rows - halfWindowSize; ++y) {
+        for (int x = halfWindowSize; x < resizedSrc.cols - halfWindowSize; ++x) {
+            double mean = 0.0;
+            for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
+                for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
+                    mean += resizedSrc.at<uchar>(y + j, x + i);
+                }
+            }
+            mean /= (windowSize * windowSize);
+
+            double stdDeviation = 0.0;
+            for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
+                for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
+                    double diff = resizedSrc.at<uchar>(y + j, x + i) - mean;
+                    stdDeviation += diff * diff;
+                }
+            }
+            stdDeviation = std::sqrt(stdDeviation / (windowSize * windowSize));
+
+            double threshold = mean + k * stdDeviation;
+
+            if (resizedSrc.at<uchar>(y, x) > threshold) {
+                imgThresh.at<uchar>(y, x) = 255;
+            }
+            else {
+                imgThresh.at<uchar>(y, x) = 0;
+            }
+        }
+    }
 
     return imgThresh;
 }
 
-void demonstrateNiblack(const cv::Mat& src, int windowSize, double k) {
-    cv::Mat imgThresh = niblackThreshold(src, windowSize, k);
+void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale) {
+    cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
-    cv::imshow("Original Image", src);
+    cv::Mat resizedWindow;
+    cv::resize(src, resizedWindow, cv::Size(), scale, scale);
+
+    cv::imshow("Original Image", resizedWindow);
     cv::imshow("Thresholded Image", imgThresh);
     cv::waitKey(0);
 }
 
-void showImagesTogether(const cv::Mat& img1, const cv::Mat& img2, const std::string& label1, const std::string& label2) {
-    //// Создаем разделительную линию
-    //cv::Mat separator(img1.rows, 10, CV_8UC3, cv::Scalar(255, 255, 255));
-
-    //// Создаем изображение с подписями
-    //cv::Mat labeledImg;
-    //std::cout << img1.size() << img1.type() << std::endl;
-    //std::cout << img2.size() << img2.type() << std::endl;
-    //std::cout << img1.size() << separator.type() << std::endl;
-    //cv::vconcat(img1, separator, labeledImg);
-    //cv::vconcat(labeledImg, img2, labeledImg);
-
-    // Добавляем подписи
-   /* cv::putText(labeledImg, label1, cv::Point(10, img1.rows + 20), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255), 2);
-    cv::putText(labeledImg, label2, cv::Point(10, img1.rows + separator.rows + 40), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(255, 255, 255), 2);*/
-
-    cv::imshow("Combined Images", img1);
-    cv::waitKey(0);
-    cv::imshow("Combined Images", img2);
-    cv::waitKey(0);
-}
-
-int main() {
-    cv::Mat image = cv::imread("C:/Users/nick_/Downloads/test.jpg");
-
-    if (image.empty()) {
-        std::cout << "Failed to load image." << std::endl;
+int main(int argc, char** argv) {
+    if (argc < 3) {
+        std::cout << "РћС€РёР±РєР°: РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ Р°СЂРіСѓРјРµРЅС‚РѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё.\n";
+        std::cout << "Р¤РѕСЂРјР°С‚ РєРѕРјР°РЅРґС‹: <input_image> <window_size> <k>\n";
         return -1;
     }
 
-    int windowSize = 21;
-    double k = -0.2;
+    std::string inputImagePath = argv[1];
+    int windowSize = std::atoi(argv[2]);
+    double k = std::atof(argv[3]);
+    double scale;
 
-    cv::Mat resizedImage;
-    cv::resize(image, resizedImage, cv::Size(800, 600));
+    cv::Mat image = cv::imread(inputImagePath);
 
-    cv::Mat imgThresh = niblackThreshold(resizedImage, windowSize, k);
+    if (image.empty()) {
+        std::cout << "РћС€РёР±РєР°: РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёРµ.\n";
+        return -1;
+    }
 
-    showImagesTogether(resizedImage, imgThresh, "Original Image", "Thresholded Image");
+    demonstrateNiblack(image, windowSize, k, scale);
 
     return 0;
 }
