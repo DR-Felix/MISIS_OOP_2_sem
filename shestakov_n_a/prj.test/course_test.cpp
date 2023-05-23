@@ -1,6 +1,35 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <fstream>
 #include <cmath>
+
+std::vector<double> calculateMeanBrightness(const cv::Mat& src) {
+    cv::Mat imgGray;
+    cv::cvtColor(src, imgGray, cv::COLOR_BGR2GRAY);
+
+    std::vector<double> meanBrightness;
+
+    for (int y = 0; y < imgGray.rows; ++y) {
+        for (int x = 0; x < imgGray.cols; ++x) {
+            meanBrightness.push_back(static_cast<double>(imgGray.at<uchar>(y, x)));
+        }
+    }
+
+    return meanBrightness;
+}
+
+void saveMeanBrightnessToFile(const std::vector<double>& meanBrightness, const std::string& filename) {
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        for (double value : meanBrightness) {
+            file << value << "\n";
+        }
+        file.close();
+    }
+    else {
+        std::cout << "Ошибка: Не удалось открыть файл для сохранения данных.\n";
+    }
+}
 
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
     cv::Mat imgGray;
@@ -62,12 +91,23 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
 }
 
 int main(int argc, char** argv) {
+
+    std::cout << "Enter the command in the format:\n";
+    std::cout << "<input_image> <window_size> <k>\n";
+    std::cout << "Where:\n";
+    std::cout << "<input_image> - path to the input image.\n";
+    std::cout << "<window_size> - window size (integer).\n";
+    std::cout << "<k> - parameter k for the Niblack algorithm (floating point number).\n";
+
     if (argc != 4) {
-        std::cout << "Ошибка: Неверное количество параметров командной строки.\n";
-        std::cout << "Правильный формат команды: <input_image> <window_size> <k>\n";
+        std::cout << "Error: Incorrect number of command line parameters.\n";
+        std::cout << "The correct command format is: <input_image> <window_size> <k>\n";
         return -1;
     }
-    
+
+
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2
+
     std::string inputImagePath = argv[1];
     int windowSize = std::atoi(argv[2]);
     double k = std::atof(argv[3]);
@@ -80,7 +120,15 @@ int main(int argc, char** argv) {
         std::cout << "Ошибка: Не удалось загрузить изображение.\n";
         return -1;
     }
+
+    std::vector<double> meanBrightness = calculateMeanBrightness(image);
+
+    std::string dataFilename = "C:/Users/nick_/Downloads/mean_brightness.txt";
+
+    saveMeanBrightnessToFile(meanBrightness, dataFilename);
+
     demonstrateNiblack(image, windowSize, k, scale);
 
     return 0;
 }
+
