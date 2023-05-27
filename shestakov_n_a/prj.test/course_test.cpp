@@ -65,7 +65,8 @@ void drawGraph(cv::Mat& plotImage, const std::vector<double>& values, cv::Scalar
     }
 }
 
-void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int selectedRow) {
+
+void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale) {
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
     cv::Mat resizedWindow;
@@ -82,13 +83,11 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     std::vector<double> thresholdValues;
 
     int halfWindowSize = windowSize / 2;
-    if (selectedRow >= halfWindowSize && selectedRow < imgThresh.rows - halfWindowSize) {
+    for (int y = halfWindowSize; y < imgThresh.rows - halfWindowSize; ++y) {
         double localInten = 0.0;
         double mean = 0.0;
         double variance = 0.0;
         double threshold = 0.0;
-
-        int y = selectedRow;
 
         for (int x = halfWindowSize; x < imgThresh.cols - halfWindowSize; ++x) {
             localInten += static_cast<double>(src.at<cv::Vec3b>(y, x)[0]) / 3.0;
@@ -125,74 +124,68 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
         meanValues.push_back(mean);
         varianceValues.push_back(variance);
         thresholdValues.push_back(threshold);
-
-        // Нормализация значений для отображения на графике
-        double maxIntensity = *std::max_element(localIntensity.begin(), localIntensity.end());
-        double maxMean = *std::max_element(meanValues.begin(), meanValues.end());
-        double maxVariance = *std::max_element(varianceValues.begin(), varianceValues.end());
-        double maxThreshold = *std::max_element(thresholdValues.begin(), thresholdValues.end());
-
-        for (auto& value : localIntensity) {
-            value = value / maxIntensity * 255.0;
-        }
-
-        for (auto& value : meanValues) {
-            value = value / maxMean * 255.0;
-        }
-
-        for (auto& value : varianceValues) {
-            value = value / maxVariance * 255.0;
-        }
-
-        for (auto& value : thresholdValues) {
-            value = value / maxThreshold * 255.0;
-        }
-
-        // Отображение графиков на изображении
-        drawGraph(plotImage, meanValues, cv::Scalar(0, 255, 0));          // Mean (зеленый)
-        drawGraph(plotImage, varianceValues, cv::Scalar(0, 0, 255));      // Variance (красный)
-        drawGraph(plotImage, thresholdValues, cv::Scalar(255, 0, 0));     // Actual Threshold (синий)
-
-        cv::imshow("Mean Brightness Graph", plotImage); // Отображение графика
-        cv::waitKey(0);
     }
-    else {
-        std::cout << "Error: Selected row is out of range.\n";
+
+    // Нормализация значений для отображения на графике
+    double maxIntensity = *std::max_element(localIntensity.begin(), localIntensity.end());
+    double maxMean = *std::max_element(meanValues.begin(), meanValues.end());
+    double maxVariance = *std::max_element(varianceValues.begin(), varianceValues.end());
+    double maxThreshold = *std::max_element(thresholdValues.begin(), thresholdValues.end());
+
+    for (auto& value : localIntensity) {
+        value = value / maxIntensity * 255.0;
     }
+
+    for (auto& value : meanValues) {
+        value = value / maxMean * 255.0;
+    }
+
+    for (auto& value : varianceValues) {
+        value = value / maxVariance * 255.0;
+    }
+
+    for (auto& value : thresholdValues) {
+        value = value / maxThreshold * 255.0;
+    }
+
+    // Отображение графиков на изображении
+    drawGraph(plotImage, meanValues, cv::Scalar(0, 255, 0));          // Mean (зеленый)
+    drawGraph(plotImage, varianceValues, cv::Scalar(0, 0, 255));      // Variance (красный)
+    drawGraph(plotImage, thresholdValues, cv::Scalar(255, 0, 0));     // Actual Threshold (синий)
+
+    cv::imshow("Mean Brightness Graph", plotImage); // Отображение графика
+    cv::waitKey(0);
 }
 
 int main(int argc, char** argv) {
 
     std::cout << "Enter the command in the format:\n";
-    std::cout << "<input_image> <window_size> <k> <selected_row>\n";
+    std::cout << "<input_image> <window_size> <k>\n";
     std::cout << "Where:\n";
     std::cout << "<input_image> - path to the input image.\n";
     std::cout << "<window_size> - window size (integer).\n";
     std::cout << "<k> - parameter k for the Niblack algorithm (floating point number).\n";
-    std::cout << "<selected_row> - the row number for which to display the graphs.\n";
 
-    if (argc != 5) {
+    if (argc != 4) {
         std::cout << "Error: Incorrect number of command line parameters.\n";
-        std::cout << "The correct command format is: <input_image> <window_size> <k> <selected_row>\n";
+        std::cout << "The correct command format is: <input_image> <window_size> <k>\n";
         return -1;
     }
 
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2
     std::string inputImagePath = argv[1];
     int windowSize = std::atoi(argv[2]);
     double k = std::atof(argv[3]);
-    int selectedRow = std::atoi(argv[4]);
 
     double scale;
 
     cv::Mat image = cv::imread(inputImagePath);
 
     if (image.empty()) {
-        std::cout << "Error: Failed to load image.\n";
+        std::cout << "Error: Failed to upload image.\n";
         return -1;
     }
-
-    demonstrateNiblack(image, windowSize, k, scale, selectedRow);
+    demonstrateNiblack(image, windowSize, k, scale);
 
     return 0;
 }
-// C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2 5
