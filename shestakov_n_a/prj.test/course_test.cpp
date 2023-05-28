@@ -234,6 +234,13 @@ int main(int argc, char** argv) {
 
     cv::Mat image = cv::imread(inputImagePath);
 
+    int type = image.type();
+    int depth = image.depth();
+
+    std::cout << "Тип данных: " << type << std::endl;
+    std::cout << "Глубина цвета: " << depth << std::endl;
+
+
     if (image.empty()) {
         std::cout << "Error: Failed to upload image.\n";
         return -1;
@@ -245,7 +252,12 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 -0.5 10
+    if (image.channels() != 1 || image.type() != CV_8UC1) {
+        std::cout << "Error: incorrect image format. There should be a single-channel grayscale image.\n";
+        return -1;
+    }
+
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test3.jpg 31 -0.5 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
