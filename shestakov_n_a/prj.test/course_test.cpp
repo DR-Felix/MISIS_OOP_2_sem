@@ -65,8 +65,54 @@ void drawGraph(cv::Mat& plotImage, const std::vector<double>& values, cv::Scalar
     }
 }
 
+cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity, const std::vector<double>& meanValues, const std::vector<double>& varianceValues, const std::vector<double>& thresholdValues, int selectedRow) {
+    int plotWidth = plotImage.cols;
+    int plotHeight = plotImage.rows;
 
-void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int targetRow) {
+    int numDataPoints = localIntensity.size();
+    double dx = static_cast<double>(plotWidth) / static_cast<double>(numDataPoints - 1);
+
+    std::vector<cv::Point> localIntensityPoints;
+    std::vector<cv::Point> meanPoints;
+    std::vector<cv::Point> variancePoints;
+    std::vector<cv::Point> thresholdPoints;
+
+    for (int i = 0; i < numDataPoints; ++i) {
+        int x = static_cast<int>(i * dx);
+        int yLocalIntensity = static_cast<int>((1.0 - localIntensity[i]) * (plotHeight - 1));
+        int yMean = static_cast<int>((1.0 - meanValues[i]) * (plotHeight - 1));
+        int yVariance = static_cast<int>((1.0 - varianceValues[i]) * (plotHeight - 1));
+        int yThreshold = static_cast<int>((1.0 - thresholdValues[i]) * (plotHeight - 1));
+
+        localIntensityPoints.emplace_back(x, yLocalIntensity);
+        meanPoints.emplace_back(x, yMean);
+        variancePoints.emplace_back(x, yVariance);
+        thresholdPoints.emplace_back(x, yThreshold);
+    }
+
+    cv::Scalar localIntensityColor(255, 0, 0);   // Красный цвет для local intensity
+    cv::Scalar meanColor(0, 0, 255);              // Синий цвет для mean
+    cv::Scalar varianceColor(0, 255, 0);          // Зеленый цвет для variance
+    cv::Scalar thresholdColor(0, 255, 255);       // Желтый цвет для threshold
+
+    // Отображение графика
+    for (int i = 1; i < numDataPoints; ++i) {
+        cv::line(plotImage, localIntensityPoints[i - 1], localIntensityPoints[i], localIntensityColor);
+        cv::line(plotImage, meanPoints[i - 1], meanPoints[i], meanColor);
+        cv::line(plotImage, variancePoints[i - 1], variancePoints[i], varianceColor);
+        cv::line(plotImage, thresholdPoints[i - 1], thresholdPoints[i], thresholdColor);
+    }
+
+    // Отображение выбранной строки
+    cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
+    int ySelectedRow = static_cast<int>((1.0 - localIntensity[selectedRow]) * (plotHeight - 1));
+    cv::line(plotImage, cv::Point(0, ySelectedRow), cv::Point(plotWidth, ySelectedRow), selectedRowColor, 2);
+
+    return plotImage;
+}
+
+
+void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int selectedRow) {
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
     cv::Mat resizedWindow;
@@ -132,47 +178,19 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     double maxVariance = *std::max_element(varianceValues.begin(), varianceValues.end());
     double maxThreshold = *std::max_element(thresholdValues.begin(), thresholdValues.end());
 
-    for (auto& value : localIntensity) {
-        value = value / maxIntensity * 255.0;
+    for (size_t i = 0; i < localIntensity.size(); ++i) {
+        localIntensity[i] /= maxIntensity;
+        meanValues[i] /= maxMean;
+        varianceValues[i] /= maxVariance;
+        thresholdValues[i] /= maxThreshold;
     }
 
-    for (auto& value : meanValues) {
-        value = value / maxMean * 255.0;
-    }
+    cv::Mat plotGraph = plotValues(plotImage, localIntensity, meanValues, varianceValues, thresholdValues, selectedRow);
 
-    for (auto& value : varianceValues) {
-        value = value / maxVariance * 255.0;
-    }
-
-    for (auto& value : thresholdValues) {
-        value = value / maxThreshold * 255.0;
-    }
-
-    // Отображение графиков на изображении
-    drawGraph(plotImage, meanValues, cv::Scalar(0, 255, 0));          // Mean (зеленый)
-    drawGraph(plotImage, varianceValues, cv::Scalar(0, 0, 255));      // Variance (красный)
-    drawGraph(plotImage, thresholdValues, cv::Scalar(255, 0, 0));     // Actual Threshold (синий)
-
-    cv::imshow("Mean Brightness Graph", plotImage); // Отображение графика
-
-    // Отображение графика только для заданной строки
-    cv::Mat rowPlotImage(400, 600, CV_8UC3, cv::Scalar(255, 255, 255));
-    std::vector<double> rowValues;
-    rowValues.push_back(localIntensity[targetRow]);
-    rowValues.push_back(varianceValues[targetRow]);
-    rowValues.push_back(thresholdValues[targetRow]);
-
-    double maxRowValue = *std::max_element(rowValues.begin(), rowValues.end());
-
-    for (auto& value : rowValues) {
-        value = value / maxRowValue * 255.0;
-    }
-
-    drawGraph(rowPlotImage, rowValues, cv::Scalar(0, 0, 255));  // Параметры строки (красный)
-    cv::imshow("Row Parameters", rowPlotImage);
-
+    cv::imshow("Row Parameters", plotGraph);
     cv::waitKey(0);
 }
+
 
 int main(int argc, char** argv) {
     std::cout << "Enter the command in the format:\n";
@@ -209,7 +227,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2 1
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
