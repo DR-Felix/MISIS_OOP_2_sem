@@ -46,6 +46,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
             }
         }
     }
+    resizedSrc.release();
 
     return imgThresh;
 }
@@ -107,6 +108,8 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
     cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
     int ySelectedRow = static_cast<int>((1.0 - localIntensity[selectedRow]) * (plotHeight - 1));
     cv::line(plotImage, cv::Point(0, ySelectedRow), cv::Point(plotWidth, ySelectedRow), selectedRowColor, 2);
+
+    plotImage.release();
 
     return plotImage;
 }
@@ -189,6 +192,16 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
 
     cv::imshow("Row Parameters", plotGraph);
     cv::waitKey(0);
+
+    plotGraph.release();
+
+    localIntensity.clear();
+    meanValues.clear();
+    varianceValues.clear();
+    thresholdValues.clear();
+
+    imgThresh.release();
+
 }
 
 
@@ -227,7 +240,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2 1
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 -0,5 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
