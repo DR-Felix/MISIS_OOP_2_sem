@@ -105,9 +105,7 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
     }
 
     // Отображение выбранной строки
-    cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
-    int ySelectedRow = static_cast<int>((1.0 - localIntensity[selectedRow]) * (plotHeight - 1));
-    cv::line(plotImage, cv::Point(0, ySelectedRow), cv::Point(plotWidth, ySelectedRow), selectedRowColor, 2);
+
 
 
 
@@ -121,7 +119,14 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     cv::Mat resizedWindow;
     cv::resize(src, resizedWindow, cv::Size(), scale, scale);
 
-    cv::imshow("Original Image", resizedWindow);
+    cv::Mat highlightedImage = resizedWindow.clone();
+    cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
+
+    int ySelectedRow = static_cast<int>(selectedRow * scale);
+    cv::line(highlightedImage, cv::Point(0, ySelectedRow), cv::Point(highlightedImage.cols, ySelectedRow), selectedRowColor, 2);
+
+    cv::imshow("Highlighted Image", highlightedImage);
+
     cv::imshow("Thresholded Image", imgThresh);
 
     cv::Mat plotImage(800, 600, CV_8UC3, cv::Scalar(255, 255, 255));
@@ -240,7 +245,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 -0,5 10
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 -0.5 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
