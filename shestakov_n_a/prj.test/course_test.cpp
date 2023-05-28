@@ -109,7 +109,7 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
     int ySelectedRow = static_cast<int>((1.0 - localIntensity[selectedRow]) * (plotHeight - 1));
     cv::line(plotImage, cv::Point(0, ySelectedRow), cv::Point(plotWidth, ySelectedRow), selectedRowColor, 2);
 
-    plotImage.release();
+
 
     return plotImage;
 }
