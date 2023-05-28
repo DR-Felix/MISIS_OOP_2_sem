@@ -66,7 +66,7 @@ void drawGraph(cv::Mat& plotImage, const std::vector<double>& values, cv::Scalar
 }
 
 
-void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale) {
+void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int targetRow) {
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
     cv::Mat resizedWindow;
@@ -154,30 +154,47 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     drawGraph(plotImage, thresholdValues, cv::Scalar(255, 0, 0));     // Actual Threshold (синий)
 
     cv::imshow("Mean Brightness Graph", plotImage); // Отображение графика
+
+    // Отображение графика только для заданной строки
+    cv::Mat rowPlotImage(400, 600, CV_8UC3, cv::Scalar(255, 255, 255));
+    std::vector<double> rowValues;
+    rowValues.push_back(localIntensity[targetRow]);
+    rowValues.push_back(varianceValues[targetRow]);
+    rowValues.push_back(thresholdValues[targetRow]);
+
+    double maxRowValue = *std::max_element(rowValues.begin(), rowValues.end());
+
+    for (auto& value : rowValues) {
+        value = value / maxRowValue * 255.0;
+    }
+
+    drawGraph(rowPlotImage, rowValues, cv::Scalar(0, 0, 255));  // Параметры строки (красный)
+    cv::imshow("Row Parameters", rowPlotImage);
+
     cv::waitKey(0);
 }
 
 int main(int argc, char** argv) {
-
     std::cout << "Enter the command in the format:\n";
-    std::cout << "<input_image> <window_size> <k>\n";
+    std::cout << "<input_image> <window_size> <k> <target_row>\n";
     std::cout << "Where:\n";
     std::cout << "<input_image> - path to the input image.\n";
     std::cout << "<window_size> - window size (integer).\n";
     std::cout << "<k> - parameter k for the Niblack algorithm (floating point number).\n";
+    std::cout << "<target_row> - row number for which to display the parameter graph.\n";
 
-    if (argc != 4) {
+    if (argc != 5) {
         std::cout << "Error: Incorrect number of command line parameters.\n";
-        std::cout << "The correct command format is: <input_image> <window_size> <k>\n";
+        std::cout << "The correct command format is: <input_image> <window_size> <k> <target_row>\n";
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2
     std::string inputImagePath = argv[1];
     int windowSize = std::atoi(argv[2]);
     double k = std::atof(argv[3]);
+    int targetRow = std::atoi(argv[4]);
 
-    double scale;
+    double scale = 1;
 
     cv::Mat image = cv::imread(inputImagePath);
 
@@ -185,7 +202,16 @@ int main(int argc, char** argv) {
         std::cout << "Error: Failed to upload image.\n";
         return -1;
     }
-    demonstrateNiblack(image, windowSize, k, scale);
+
+    if (targetRow < 1 || targetRow > image.rows) {
+        std::cout << "Error: Invalid row number.\n";
+        std::cout << "Enter the row number (1-" << image.rows << "): ";
+        return -1;
+    }
+
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test1.jpg 31 0,2
+
+    demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
     return 0;
 }
