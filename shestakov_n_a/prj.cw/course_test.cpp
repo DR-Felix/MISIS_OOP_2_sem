@@ -1,5 +1,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/utils/logger.hpp>
 #include <cmath>
 
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
@@ -91,12 +92,12 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
         thresholdPoints.emplace_back(x, yThreshold);
     }
 
-    cv::Scalar localIntensityColor(255, 0, 0);   // Красный цвет для local intensity
-    cv::Scalar meanColor(0, 0, 255);              // Синий цвет для mean
-    cv::Scalar varianceColor(0, 255, 0);          // Зеленый цвет для variance
-    cv::Scalar thresholdColor(0, 255, 255);       // Желтый цвет для threshold
+    cv::Scalar localIntensityColor(255, 0, 0);   // РљСЂР°СЃРЅС‹Р№ С†РІРµС‚ РґР»СЏ local intensity
+    cv::Scalar meanColor(0, 0, 255);              // РЎРёРЅРёР№ С†РІРµС‚ РґР»СЏ mean
+    cv::Scalar varianceColor(0, 255, 0);          // Р—РµР»РµРЅС‹Р№ С†РІРµС‚ РґР»СЏ variance
+    cv::Scalar thresholdColor(0, 255, 255);       // Р–РµР»С‚С‹Р№ С†РІРµС‚ РґР»СЏ threshold
 
-    // Отображение графика
+    // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РіСЂР°С„РёРєР°
     for (int i = 1; i < numDataPoints; ++i) {
         cv::Point point1 = localIntensityPoints[i - 1];
         cv::Point point2 = localIntensityPoints[i];
@@ -135,7 +136,7 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
     int legendMargin = 20;
     int legendHeight = 30;
 
-    cv::putText(plotImage, "Local Intensity", cv::Point(50, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
+    cv::putText(plotImage, "Local Intensity", cv::Point(100, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
     cv::putText(plotImage, "Mean", cv::Point(200, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
     cv::putText(plotImage, "Variance", cv::Point(300, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1);
     cv::putText(plotImage, "Threshold", cv::Point(400, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 255), 1);
@@ -152,7 +153,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     cv::resize(src, resizedWindow, cv::Size(), scale, scale);
 
     cv::Mat highlightedImage = resizedWindow.clone();
-    cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
+    cv::Scalar selectedRowColor(0, 0, 255);   // РЎРёРЅРёР№ С†РІРµС‚ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕР№ СЃС‚СЂРѕРєРё
 
     int ySelectedRow = static_cast<int>(selectedRow * scale);
     cv::line(highlightedImage, cv::Point(0, ySelectedRow), cv::Point(highlightedImage.cols, ySelectedRow), selectedRowColor, 2);
@@ -212,7 +213,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
         thresholdValues.push_back(threshold);
     }
 
-    // Нормализация значений для отображения на графике
+    // РќРѕСЂРјР°Р»РёР·Р°С†РёСЏ Р·РЅР°С‡РµРЅРёР№ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РЅР° РіСЂР°С„РёРєРµ
     double maxIntensity = *std::max_element(localIntensity.begin(), localIntensity.end());
     double maxMean = *std::max_element(meanValues.begin(), meanValues.end());
     double maxVariance = *std::max_element(varianceValues.begin(), varianceValues.end());
@@ -243,17 +244,18 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
 
 
 int main(int argc, char** argv) {
-    std::cout << "Enter the command in the format:\n";
-    std::cout << "<input_image> <window_size> <k> <target_row>\n";
-    std::cout << "Where:\n";
-    std::cout << "<input_image> - path to the input image.\n";
-    std::cout << "<window_size> - window size (integer).\n";
-    std::cout << "<k> - parameter k for the Niblack algorithm (floating point number).\n";
-    std::cout << "<target_row> - row number for which to display the parameter graph.\n";
+
+    cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
 
     if (argc != 5) {
         std::cout << "Error: Incorrect number of command line parameters.\n";
-        std::cout << "The correct command format is: <input_image> <window_size> <k> <target_row>\n";
+        std::cout << "Enter the command in the format:\n";
+        std::cout << "<input_image> <window_size> <k> <target_row>\n";
+        std::cout << "Where:\n";
+        std::cout << "<input_image> - path to the input image.\n";
+        std::cout << "<window_size> - window size (integer).\n";
+        std::cout << "<k> - parameter k for the Niblack algorithm (floating point number).\n";
+        std::cout << "<target_row> - row number for which to display the parameter graph.\n";
         return -1;
     }
 
@@ -266,13 +268,6 @@ int main(int argc, char** argv) {
 
     cv::Mat image = cv::imread(inputImagePath, cv::IMREAD_GRAYSCALE);
 
-    int type = image.type();
-    int depth = image.depth();
-
-    std::cout << "Тип данных: " << type << std::endl;
-    std::cout << "Глубина цвета: " << depth << std::endl;
-
-
     if (image.empty()) {
         std::cout << "Error: Failed to upload image.\n";
         return -1;
@@ -284,7 +279,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test.png 31 -0.5 10
+    //C:/Projects_C++/OOP_2023/bin.dbg/course_test.exe prj.cw/test.png 31 -0.5 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
