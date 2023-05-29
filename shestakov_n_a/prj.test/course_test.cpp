@@ -133,10 +133,10 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
         }
     }
 
-    // Отметить выбранную строку
-    if (selectedRow >= 0 && selectedRow < plotHeight) {
-        cv::line(plotImage, cv::Point(0, selectedRow), cv::Point(plotWidth - 1, selectedRow), cv::Scalar(0, 0, 0));
-    }
+    //// Отметить выбранную строку
+    //if (selectedRow >= 0 && selectedRow < plotHeight) {
+    //    cv::line(plotImage, cv::Point(0, selectedRow), cv::Point(plotWidth - 1, selectedRow), cv::Scalar(0, 0, 0));
+    //}
 
     return plotImage;
 }
