@@ -3,15 +3,13 @@
 #include <cmath>
 
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
-    cv::Mat imgGray;
-    cv::cvtColor(src, imgGray, cv::COLOR_BGR2GRAY);
 
-    double scaleWidth = static_cast<double>(800) / imgGray.cols;
-    double scaleHeight = static_cast<double>(600) / imgGray.rows;
+    double scaleWidth = static_cast<double>(800) / src.cols;
+    double scaleHeight = static_cast<double>(600) / src.rows;
     scale = std::min(scaleWidth, scaleHeight);
 
     cv::Mat resizedSrc;
-    cv::resize(imgGray, resizedSrc, cv::Size(), scale, scale);
+    cv::resize(src, resizedSrc, cv::Size(), scale, scale);
 
     cv::Mat imgThresh(resizedSrc.size(), CV_8UC1);
 
@@ -50,6 +48,8 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
 
     return imgThresh;
 }
+
+
 
 void drawGraph(cv::Mat& plotImage, const std::vector<double>& values, cv::Scalar color) {
     int graphWidth = plotImage.cols - 100;
@@ -98,19 +98,49 @@ cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity
 
     // Отображение графика
     for (int i = 1; i < numDataPoints; ++i) {
-        cv::line(plotImage, localIntensityPoints[i - 1], localIntensityPoints[i], localIntensityColor);
-        cv::line(plotImage, meanPoints[i - 1], meanPoints[i], meanColor);
-        cv::line(plotImage, variancePoints[i - 1], variancePoints[i], varianceColor);
-        cv::line(plotImage, thresholdPoints[i - 1], thresholdPoints[i], thresholdColor);
+        cv::Point point1 = localIntensityPoints[i - 1];
+        cv::Point point2 = localIntensityPoints[i];
+
+        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
+            cv::line(plotImage, point1, point2, localIntensityColor);
+        }
     }
 
-    // Отображение выбранной строки
+    for (int i = 1; i < numDataPoints; ++i) {
+        cv::Point point1 = meanPoints[i - 1];
+        cv::Point point2 = meanPoints[i];
 
+        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
+            cv::line(plotImage, point1, point2, meanColor);
+        }
+    }
 
+    for (int i = 1; i < numDataPoints; ++i) {
+        cv::Point point1 = variancePoints[i - 1];
+        cv::Point point2 = variancePoints[i];
 
+        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
+            cv::line(plotImage, point1, point2, varianceColor);
+        }
+    }
+
+    for (int i = 1; i < numDataPoints; ++i) {
+        cv::Point point1 = thresholdPoints[i - 1];
+        cv::Point point2 = thresholdPoints[i];
+
+        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
+            cv::line(plotImage, point1, point2, thresholdColor);
+        }
+    }
+
+    // Отметить выбранную строку
+    if (selectedRow >= 0 && selectedRow < plotHeight) {
+        cv::line(plotImage, cv::Point(0, selectedRow), cv::Point(plotWidth - 1, selectedRow), cv::Scalar(0, 0, 0));
+    }
 
     return plotImage;
 }
+
 
 
 void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int selectedRow) {
@@ -144,12 +174,12 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
         double threshold = 0.0;
 
         for (int x = halfWindowSize; x < imgThresh.cols - halfWindowSize; ++x) {
-            localInten += static_cast<double>(src.at<cv::Vec3b>(y, x)[0]) / 3.0;
+            localInten += static_cast<double>(src.at<uchar>(y, x)) / 3.0;
 
             double meanPixel = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    meanPixel += static_cast<double>(src.at<cv::Vec3b>(y + j, x + i)[0]) / 3.0;
+                    meanPixel += static_cast<double>(src.at<uchar>(y + j, x + i)) / 3.0;
                 }
             }
             meanPixel /= (windowSize * windowSize);
@@ -158,7 +188,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
             double variancePixel = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    double diff = static_cast<double>(src.at<cv::Vec3b>(y + j, x + i)[0]) / 3.0 - meanPixel;
+                    double diff = static_cast<double>(src.at<uchar>(y + j, x + i)) / 3.0 - meanPixel;
                     variancePixel += diff * diff;
                 }
             }
@@ -232,7 +262,7 @@ int main(int argc, char** argv) {
 
     double scale = 1;
 
-    cv::Mat image = cv::imread(inputImagePath);
+    cv::Mat image = cv::imread(inputImagePath, cv::IMREAD_GRAYSCALE);
 
     int type = image.type();
     int depth = image.depth();
@@ -252,12 +282,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    if (image.channels() != 1 || image.type() != CV_8UC1) {
-        std::cout << "Error: incorrect image format. There should be a single-channel grayscale image.\n";
-        return -1;
-    }
-
-    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test3.jpg 31 -0.5 10
+    //C:\Projects_C++\OOP_2023\bin.dbg\course_test.exe C:\Users\nick_\Downloads\test.png 31 -0.5 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
