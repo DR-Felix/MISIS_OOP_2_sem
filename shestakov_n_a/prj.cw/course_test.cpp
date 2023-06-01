@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/utils/logger.hpp>
 #include <cmath>
@@ -52,96 +53,45 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
 
 
 
-void drawGraph(cv::Mat& plotImage, const std::vector<double>& values, cv::Scalar color, const std::string& label) {
-    int graphWidth = plotImage.cols - 100;
-    int graphHeight = plotImage.rows - 100;
-    double xScale = static_cast<double>(graphWidth) / values.size();
-    double yScale = static_cast<double>(graphHeight) / 255.0;
-
-    for (int i = 0; i < values.size() - 1; ++i) {
-        int x1 = 50 + static_cast<int>(i * xScale);
-        int x2 = 50 + static_cast<int>((i + 1) * xScale);
-        int y1 = plotImage.rows - 50 - static_cast<int>(values[i] * yScale);
-        int y2 = plotImage.rows - 50 - static_cast<int>(values[i + 1] * yScale);
-        cv::line(plotImage, cv::Point(x1, y1), cv::Point(x2, y2), color, 2);
+void drawGraph(std::ofstream& file, const std::vector<double>& values, const std::string& color, const std::string& label) {
+    file << "\\addplot[color=" << color << "] coordinates {";
+    for (int i = 0; i < values.size(); ++i) {
+        file << "(" << i << "," << values[i] << ") ";
     }
+    file << "};" << std::endl;
+    file << "\\addlegendentry{" << label << "}" << std::endl;
 }
 
-cv::Mat plotValues(cv::Mat& plotImage, const std::vector<double>& localIntensity, const std::vector<double>& meanValues, const std::vector<double>& varianceValues, const std::vector<double>& thresholdValues, int selectedRow) {
-    int plotWidth = plotImage.cols;
-    int plotHeight = plotImage.rows;
+void plotValues(const std::string& filePath, const std::vector<double>& localIntensity, const std::vector<double>& meanValues, const std::vector<double>& varianceValues, const std::vector<double>& thresholdValues, int selectedRow) {
+    std::ofstream file(filePath);
 
-    int numDataPoints = localIntensity.size();
-    double dx = static_cast<double>(plotWidth) / static_cast<double>(numDataPoints - 1);
-
-    std::vector<cv::Point> localIntensityPoints;
-    std::vector<cv::Point> meanPoints;
-    std::vector<cv::Point> variancePoints;
-    std::vector<cv::Point> thresholdPoints;
-
-    for (int i = 0; i < numDataPoints; ++i) {
-        int x = static_cast<int>(i * dx);
-        int yLocalIntensity = static_cast<int>((1.0 - localIntensity[i]) * (plotHeight - 1));
-        int yMean = static_cast<int>((1.0 - meanValues[i]) * (plotHeight - 1));
-        int yVariance = static_cast<int>((1.0 - varianceValues[i]) * (plotHeight - 1));
-        int yThreshold = static_cast<int>((1.0 - thresholdValues[i]) * (plotHeight - 1));
-
-        localIntensityPoints.emplace_back(x, yLocalIntensity);
-        meanPoints.emplace_back(x, yMean);
-        variancePoints.emplace_back(x, yVariance);
-        thresholdPoints.emplace_back(x, yThreshold);
+    if (!file.is_open()) {
+        std::cout << "Error: Failed to open file for writing." << std::endl;
+        return;
     }
 
-    cv::Scalar localIntensityColor(255, 0, 0);   // Красный цвет для local intensity
-    cv::Scalar meanColor(0, 0, 255);              // Синий цвет для mean
-    cv::Scalar varianceColor(0, 255, 0);          // Зеленый цвет для variance
-    cv::Scalar thresholdColor(0, 255, 255);       // Желтый цвет для threshold
+    file << "\\documentclass{standalone}" << std::endl;
+    file << "\\usepackage{pgfplots}" << std::endl;
+    file << "\\begin{document}" << std::endl;
+    file << "\\begin{tikzpicture}" << std::endl;
+    file << "\\begin{axis}" << std::endl;
+    file << "[xlabel=Index,ylabel=Value," << std::endl;
+    file << "legend pos=outer north east," << std::endl;
+    file << "legend style={cells={anchor=west},font=\\small}," << std::endl;
+    file << "width=10cm,height=8cm]" << std::endl;
 
-    // Отображение графика
-    for (int i = 1; i < numDataPoints; ++i) {
-        cv::Point point1 = localIntensityPoints[i - 1];
-        cv::Point point2 = localIntensityPoints[i];
+    drawGraph(file, localIntensity, "red", "Local Intensity");
+    drawGraph(file, meanValues, "blue", "Mean");
+    drawGraph(file, varianceValues, "green", "Variance");
+    drawGraph(file, thresholdValues, "yellow", "Threshold");
 
-        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
-            cv::line(plotImage, point1, point2, localIntensityColor);
-        }
-    }
+    file << "\\end{axis}" << std::endl;
+    file << "\\end{tikzpicture}" << std::endl;
+    file << "\\end{document}" << std::endl;
 
-    for (int i = 1; i < numDataPoints; ++i) {
-        cv::Point point1 = meanPoints[i - 1];
-        cv::Point point2 = meanPoints[i];
+    file.close();
 
-        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
-            cv::line(plotImage, point1, point2, meanColor);
-        }
-    }
-
-    for (int i = 1; i < numDataPoints; ++i) {
-        cv::Point point1 = variancePoints[i - 1];
-        cv::Point point2 = variancePoints[i];
-
-        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
-            cv::line(plotImage, point1, point2, varianceColor);
-        }
-    }
-
-    for (int i = 1; i < numDataPoints; ++i) {
-        cv::Point point1 = thresholdPoints[i - 1];
-        cv::Point point2 = thresholdPoints[i];
-
-        if (point1.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows)) && point2.inside(cv::Rect(0, 0, plotImage.cols, plotImage.rows))) {
-            cv::line(plotImage, point1, point2, thresholdColor);
-        }
-    }
-    int legendMargin = 20;
-    int legendHeight = 30;
-
-    cv::putText(plotImage, "Local Intensity", cv::Point(100, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
-    cv::putText(plotImage, "Mean", cv::Point(200, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
-    cv::putText(plotImage, "Variance", cv::Point(300, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1);
-    cv::putText(plotImage, "Threshold", cv::Point(400, plotImage.rows - legendMargin), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 255), 1);
-
-    return plotImage;
+    std::cout << "Graph saved to " << filePath << std::endl;
 }
 
 
@@ -226,12 +176,9 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
         thresholdValues[i] /= maxThreshold;
     }
 
-    cv::Mat plotGraph = plotValues(plotImage, localIntensity, meanValues, varianceValues, thresholdValues, selectedRow);
+    plotValues("graph.tex", localIntensity, meanValues, varianceValues, thresholdValues, selectedRow);
 
-    cv::imshow("Row Parameters", plotGraph);
     cv::waitKey(0);
-
-    plotGraph.release();
 
     localIntensity.clear();
     meanValues.clear();
