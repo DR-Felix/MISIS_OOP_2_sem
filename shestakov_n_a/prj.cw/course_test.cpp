@@ -4,6 +4,26 @@
 #include <opencv2/core/utils/logger.hpp>
 #include <cmath>
 
+bool check_the_image(const cv::Mat& image) {
+
+    if (image.depth() != 8) {
+        return -1;
+    }
+
+    for (int y = 0; y < image.rows; ++y) {
+        for (int x = 0; x < image.cols; ++x) {
+            cv::Vec3b pixel = image.at<cv::Vec3b>(y, x);
+
+            // Сравниваем значения в каналах
+            if (pixel[0] != pixel[1] || pixel[0] != pixel[2] || pixel[1] != pixel[2]) {
+                return false; 
+            }
+        }
+    }
+
+    return true;
+}
+
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
 
     double scaleWidth = static_cast<double>(800) / src.cols;
@@ -103,7 +123,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     cv::resize(src, resizedWindow, cv::Size(), scale, scale);
 
     cv::Mat highlightedImage = resizedWindow.clone();
-    cv::Scalar selectedRowColor(0, 0, 255);   // Синий цвет для выбранной строки
+    cv::Scalar selectedRowColor(0, 0, 255);   // Blue color for chosen line
 
     int ySelectedRow = static_cast<int>(selectedRow * scale);
     cv::line(highlightedImage, cv::Point(0, ySelectedRow), cv::Point(highlightedImage.cols, ySelectedRow), selectedRowColor, 2);
@@ -163,7 +183,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
         thresholdValues.push_back(threshold);
     }
 
-    // Нормализация значений для отображения на графике
+    // Normalization of values to display on the graph
     double maxIntensity = *std::max_element(localIntensity.begin(), localIntensity.end());
     double maxMean = *std::max_element(meanValues.begin(), meanValues.end());
     double maxVariance = *std::max_element(varianceValues.begin(), varianceValues.end());
@@ -178,14 +198,14 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
 
     plotValues("graph.tex", localIntensity, meanValues, varianceValues, thresholdValues, selectedRow);
 
-    cv::waitKey(0);
-
     localIntensity.clear();
     meanValues.clear();
     varianceValues.clear();
     thresholdValues.clear();
 
     imgThresh.release();
+
+    cv::waitKey(0);
 
 }
 
@@ -213,7 +233,14 @@ int main(int argc, char** argv) {
 
     double scale = 1;
 
-    cv::Mat image = cv::imread(inputImagePath, cv::IMREAD_GRAYSCALE);
+    cv::Mat image = cv::imread(inputImagePath, cv::IMREAD_ANYDEPTH);
+
+    bool is_bw = check_the_image(image);
+
+    if (!is_bw) {
+        std::cout << "Error: Incorrect input. Image is not black-white or has another depth of coding." << std::endl;
+        return -1;
+    }
 
     if (image.empty()) {
         std::cout << "Error: Failed to upload image.\n";
