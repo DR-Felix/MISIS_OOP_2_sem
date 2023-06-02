@@ -111,7 +111,7 @@ void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& sc
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
     cv::Mat highlightedImage = src.clone();
-    cv::Scalar selectedRowColor(0, 0, 255);   // Blue color for chosen line
+    cv::Scalar selectedRowColor(0, 0, 0);   // B;ack color for chosen line
 
     int ySelectedRow = static_cast<int>(selectedRow * scale);
     cv::line(highlightedImage, cv::Point(0, ySelectedRow), cv::Point(highlightedImage.cols, ySelectedRow), selectedRowColor, 2);
