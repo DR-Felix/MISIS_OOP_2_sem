@@ -14,9 +14,8 @@ bool check_the_image(const cv::Mat& image) {
         for (int x = 0; x < image.cols; ++x) {
             cv::Vec3b pixel = image.at<cv::Vec3b>(y, x);
 
-            // Сравниваем значения в каналах
             if (pixel[0] != pixel[1] || pixel[0] != pixel[2] || pixel[1] != pixel[2]) {
-                return false; 
+                return false;
             }
         }
     }
@@ -26,23 +25,16 @@ bool check_the_image(const cv::Mat& image) {
 
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
 
-    double scaleWidth = static_cast<double>(800) / src.cols;
-    double scaleHeight = static_cast<double>(600) / src.rows;
-    scale = std::min(scaleWidth, scaleHeight);
-
-    cv::Mat resizedSrc;
-    cv::resize(src, resizedSrc, cv::Size(), scale, scale);
-
-    cv::Mat imgThresh(resizedSrc.size(), CV_8UC1);
+    cv::Mat imgThresh(src.size(), CV_8UC1);
 
     int halfWindowSize = windowSize / 2;
 
-    for (int y = halfWindowSize; y < resizedSrc.rows - halfWindowSize; ++y) {
-        for (int x = halfWindowSize; x < resizedSrc.cols - halfWindowSize; ++x) {
+    for (int y = halfWindowSize; y < src.rows - halfWindowSize; ++y) {
+        for (int x = halfWindowSize; x < src.cols - halfWindowSize; ++x) {
             double mean = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    mean += resizedSrc.at<uchar>(y + j, x + i);
+                    mean += src.at<uchar>(y + j, x + i);
                 }
             }
             mean /= (windowSize * windowSize);
@@ -50,7 +42,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
             double stdDeviation = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    double diff = resizedSrc.at<uchar>(y + j, x + i) - mean;
+                    double diff = src.at<uchar>(y + j, x + i) - mean;
                     stdDeviation += diff * diff;
                 }
             }
@@ -58,7 +50,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
 
             double threshold = mean + k * stdDeviation;
 
-            if (resizedSrc.at<uchar>(y, x) > threshold) {
+            if (src.at<uchar>(y, x) > threshold) {
                 imgThresh.at<uchar>(y, x) = 255;
             }
             else {
@@ -66,7 +58,6 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
             }
         }
     }
-    resizedSrc.release();
 
     return imgThresh;
 }
@@ -103,7 +94,7 @@ void plotValues(const std::string& filePath, const std::vector<double>& localInt
     drawGraph(file, localIntensity, "red", "Local Intensity");
     drawGraph(file, meanValues, "blue", "Mean");
     drawGraph(file, varianceValues, "green", "Variance");
-    drawGraph(file, thresholdValues, "yellow", "Threshold");
+    drawGraph(file, thresholdValues, "orange", "Threshold");
 
     file << "\\end{axis}" << std::endl;
     file << "\\end{tikzpicture}" << std::endl;
@@ -119,10 +110,7 @@ void plotValues(const std::string& filePath, const std::vector<double>& localInt
 void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int selectedRow) {
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
-    cv::Mat resizedWindow;
-    cv::resize(src, resizedWindow, cv::Size(), scale, scale);
-
-    cv::Mat highlightedImage = resizedWindow.clone();
+    cv::Mat highlightedImage = src.clone();
     cv::Scalar selectedRowColor(0, 0, 255);   // Blue color for chosen line
 
     int ySelectedRow = static_cast<int>(selectedRow * scale);
