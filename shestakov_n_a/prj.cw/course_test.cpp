@@ -25,16 +25,23 @@ bool check_the_image(const cv::Mat& image) {
 
 cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& scale) {
 
-    cv::Mat imgThresh(src.size(), CV_8UC1);
+    double scaleWidth = static_cast<double>(800) / src.cols;
+    double scaleHeight = static_cast<double>(600) / src.rows;
+    scale = std::min(scaleWidth, scaleHeight);
+
+    cv::Mat resizedSrc;
+    cv::resize(src, resizedSrc, cv::Size(), scale, scale);
+
+    cv::Mat imgThresh(resizedSrc.size(), CV_8UC1);
 
     int halfWindowSize = windowSize / 2;
 
-    for (int y = halfWindowSize; y < src.rows - halfWindowSize; ++y) {
-        for (int x = halfWindowSize; x < src.cols - halfWindowSize; ++x) {
+    for (int y = halfWindowSize; y < resizedSrc.rows - halfWindowSize; ++y) {
+        for (int x = halfWindowSize; x < resizedSrc.cols - halfWindowSize; ++x) {
             double mean = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    mean += src.at<uchar>(y + j, x + i);
+                    mean += resizedSrc.at<uchar>(y + j, x + i);
                 }
             }
             mean /= (windowSize * windowSize);
@@ -42,7 +49,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
             double stdDeviation = 0.0;
             for (int j = -halfWindowSize; j <= halfWindowSize; ++j) {
                 for (int i = -halfWindowSize; i <= halfWindowSize; ++i) {
-                    double diff = src.at<uchar>(y + j, x + i) - mean;
+                    double diff = resizedSrc.at<uchar>(y + j, x + i) - mean;
                     stdDeviation += diff * diff;
                 }
             }
@@ -50,7 +57,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
 
             double threshold = mean + k * stdDeviation;
 
-            if (src.at<uchar>(y, x) > threshold) {
+            if (resizedSrc.at<uchar>(y, x) > threshold) {
                 imgThresh.at<uchar>(y, x) = 255;
             }
             else {
@@ -58,6 +65,7 @@ cv::Mat niblackThreshold(const cv::Mat& src, int windowSize, double k, double& s
             }
         }
     }
+    resizedSrc.release();
 
     return imgThresh;
 }
@@ -94,7 +102,7 @@ void plotValues(const std::string& filePath, const std::vector<double>& localInt
     drawGraph(file, localIntensity, "red", "Local Intensity");
     drawGraph(file, meanValues, "blue", "Mean");
     drawGraph(file, varianceValues, "green", "Variance");
-    drawGraph(file, thresholdValues, "orange", "Threshold");
+    drawGraph(file, thresholdValues, "purple", "Threshold");
 
     file << "\\end{axis}" << std::endl;
     file << "\\end{tikzpicture}" << std::endl;
@@ -110,14 +118,19 @@ void plotValues(const std::string& filePath, const std::vector<double>& localInt
 void demonstrateNiblack(const cv::Mat& src, int windowSize, double k, double& scale, int selectedRow) {
     cv::Mat imgThresh = niblackThreshold(src, windowSize, k, scale);
 
-    cv::Mat highlightedImage = src.clone();
-    cv::Scalar selectedRowColor(0, 0, 0);   // B;ack color for chosen line
+    cv::Mat resizedWindow;
+    cv::resize(src, resizedWindow, cv::Size(), scale, scale);
+
+    cv::Mat highlightedImage = resizedWindow.clone();
+    cv::Scalar selectedRowColor(0, 0, 255);   // Blue color for chosen line
 
     int ySelectedRow = static_cast<int>(selectedRow * scale);
     cv::line(highlightedImage, cv::Point(0, ySelectedRow), cv::Point(highlightedImage.cols, ySelectedRow), selectedRowColor, 2);
 
-    cv::imshow("Highlighted Image", highlightedImage);
+    cv::imwrite("Old_image.png", highlightedImage);
+    cv::imwrite("New_image.png", imgThresh);
 
+    cv::imshow("Highlighted Image", highlightedImage);
     cv::imshow("Thresholded Image", imgThresh);
 
     cv::Mat plotImage(800, 600, CV_8UC3, cv::Scalar(255, 255, 255));
@@ -242,6 +255,7 @@ int main(int argc, char** argv) {
     }
 
     //C:/Projects_C++/OOP_2023/bin.dbg/course_test.exe prj.cw/test.png 31 -0.5 10
+    //C:/Projects_C++/OOP_2023/bin.dbg/course_test.exe "C:\Users\nick_\Downloads\test.png" 31 -0.2 10
 
     demonstrateNiblack(image, windowSize, k, scale, targetRow);
 
