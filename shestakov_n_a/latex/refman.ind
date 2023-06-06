@@ -1,0 +1,89 @@
+\begin{theindex}
+
+  \item {\texorpdfstring{$\sim$}{\string~}NiblackBinarization}
+    \subitem {NiblackBinarization}, \hyperpage{7}
+
+  \indexspace
+
+  \item {C:/Projects\_C++/OOP\_2023/prj.cw/niblack/include/niblack/niblack.hpp}, 
+		\hyperpage{11}
+  \item {C:/Projects\_C++/OOP\_2023/prj.cw/niblack/niblack.cpp}, 
+		\hyperpage{12}
+  \item {check\_the\_image}
+    \subitem {NiblackBinarization}, \hyperpage{7}
+
+  \indexspace
+
+  \item {demonstrateNiblack}
+    \subitem {NiblackBinarization}, \hyperpage{7}
+  \item {drawGraph}
+    \subitem {NiblackBinarization}, \hyperpage{7}
+
+  \indexspace
+
+  \item {image\_}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+
+  \indexspace
+
+  \item {k\_}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+
+  \indexspace
+
+  \item {NiblackBinarization}, \hyperpage{5}
+    \subitem {\texorpdfstring{$\sim$}{\string~}NiblackBinarization}, 
+		\hyperpage{7}
+    \subitem {check\_the\_image}, \hyperpage{7}
+    \subitem {demonstrateNiblack}, \hyperpage{7}
+    \subitem {drawGraph}, \hyperpage{7}
+    \subitem {image\_}, \hyperpage{10}
+    \subitem {k\_}, \hyperpage{10}
+    \subitem {NiblackBinarization}, \hyperpage{6}
+    \subitem {niblackThreshold}, \hyperpage{8}
+    \subitem {operator=}, \hyperpage{8}
+    \subitem {plotValues}, \hyperpage{9}
+    \subitem {scale\_}, \hyperpage{10}
+    \subitem {setInputImage}, \hyperpage{9}
+    \subitem {setK}, \hyperpage{9}
+    \subitem {setTargetRow}, \hyperpage{9}
+    \subitem {setWindowSize}, \hyperpage{10}
+    \subitem {target\_row\_}, \hyperpage{10}
+    \subitem {window\_size\_}, \hyperpage{10}
+  \item {niblackThreshold}
+    \subitem {NiblackBinarization}, \hyperpage{8}
+
+  \indexspace
+
+  \item {operator=}
+    \subitem {NiblackBinarization}, \hyperpage{8}
+
+  \indexspace
+
+  \item {plotValues}
+    \subitem {NiblackBinarization}, \hyperpage{9}
+
+  \indexspace
+
+  \item {scale\_}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+  \item {setInputImage}
+    \subitem {NiblackBinarization}, \hyperpage{9}
+  \item {setK}
+    \subitem {NiblackBinarization}, \hyperpage{9}
+  \item {setTargetRow}
+    \subitem {NiblackBinarization}, \hyperpage{9}
+  \item {setWindowSize}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+
+  \indexspace
+
+  \item {target\_row\_}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+
+  \indexspace
+
+  \item {window\_size\_}
+    \subitem {NiblackBinarization}, \hyperpage{10}
+
+\end{theindex}
