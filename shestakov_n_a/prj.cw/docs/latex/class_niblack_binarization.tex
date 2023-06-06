@@ -1,0 +1,352 @@
+\doxysection{Niblack\+Binarization Class Reference}
+\hypertarget{class_niblack_binarization}{}\label{class_niblack_binarization}\index{NiblackBinarization@{NiblackBinarization}}
+
+
+Namespace for std\+::filesystem methods.  
+
+
+
+
+{\ttfamily \#include $<$niblack.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_niblack_binarization_a76f223d7710da9dd7f111ba631650b39}{Niblack\+Binarization}} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor for the Niblack\+Binariation class. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_niblack_binarization_aab768233493d6be4411ff46ac037a41f}{Niblack\+Binarization}} (cv\+::\+Mat \&rhs)
+\begin{DoxyCompactList}\small\item\em Copy constructor for the Niblack\+Binariation class. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_niblack_binarization_ac3bf7c8e54fbd51ea1bbae7a88b91a53}{Niblack\+Binarization}} (cv\+::\+Mat \&src, const int window\+\_\+size, const double k, const double \&scale)
+\begin{DoxyCompactList}\small\item\em Copy constructor for the Niblack\+Binariation class. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_niblack_binarization_a6fe34d27c38d149527ac3a82a695c519}{\texorpdfstring{$\sim$}{\string~}\+Niblack\+Binarization}} ()=default
+\begin{DoxyCompactList}\small\item\em Destructor for the Niblack\+Binariation class. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_niblack_binarization}{Niblack\+Binarization}} \& \mbox{\hyperlink{class_niblack_binarization_a120cc426c45e49376c99aeca00d6406f}{operator=}} (const \mbox{\hyperlink{class_niblack_binarization}{Niblack\+Binarization}} \&rhs)
+\begin{DoxyCompactList}\small\item\em Access operator for the \doxylink{class_niblack_binarization}{Niblack\+Binarization} class. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_niblack_binarization_a1c4bb4c1a7248bf177c6a1e1f12290b6}{check\+\_\+the\+\_\+image}} (cv\+::\+Mat image)
+\begin{DoxyCompactList}\small\item\em A method that checks the correctness of the image format. \end{DoxyCompactList}\item 
+cv\+::\+Mat \mbox{\hyperlink{class_niblack_binarization_a42f19b0cd0e54f56e31124e8184eeb04}{niblack\+Threshold}} (const cv\+::\+Mat \&src, int window\+\_\+size, double k, double \&scale)
+\begin{DoxyCompactList}\small\item\em Method that performs image binarization using the Niblack method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_acb7285b73ae5376fd80ba69f00d21c84}{demonstrate\+Niblack}} (const cv\+::\+Mat \&src, int window\+\_\+size, double k, double scale, int selected\+\_\+row, std\+::string executable\+\_\+path)
+\begin{DoxyCompactList}\small\item\em Method that demonstrates the source and from the binarized image obtained by calling the niblack\+Threshold method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_acbe1ff350de887e2729549df8a1303ae}{draw\+Graph}} (std\+::ofstream \&file, const std\+::vector$<$ double $>$ \&values, const std\+::string \&color, const std\+::string \&label)
+\begin{DoxyCompactList}\small\item\em a method that stores the coordinates of points in a .tex file for visualization \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_aa801992536007b571a92a1d52200e569}{plot\+Values}} (const std\+::string \&file\+Path, const std\+::vector$<$ double $>$ \&local\+Intensity, const std\+::vector$<$ double $>$ \&mean\+Values, const std\+::vector$<$ double $>$ \&variance\+Values, const std\+::vector$<$ double $>$ \&threshold\+Values, int selected\+Row)
+\begin{DoxyCompactList}\small\item\em The method in which the structure of the .tex file is formed, as well as its contents, by calling the draw\+Graph method. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_a81562124a4890cf5c91310f935dcccdf}{set\+Window\+Size}} (int window\+\_\+size)
+\begin{DoxyCompactList}\small\item\em window\+\_\+size setter \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_aca96dd4fffc8ed030c91ee3e7ac72ff1}{setK}} (double k)
+\begin{DoxyCompactList}\small\item\em K setter. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_a559831165f33e989fa719579142591e2}{set\+Target\+Row}} (int target\+\_\+row)
+\begin{DoxyCompactList}\small\item\em target\+\_\+row setter \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_niblack_binarization_a4221833debd01fd6d7cdb59cc9dea085}{set\+Input\+Image}} (const cv\+::\+Mat \&image)
+\begin{DoxyCompactList}\small\item\em image setter \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+cv\+::\+Mat \mbox{\hyperlink{class_niblack_binarization_ad27c66b06843c81f688389d1fcc63e0e}{image\+\_\+}}
+\item 
+int \mbox{\hyperlink{class_niblack_binarization_aba3f6ae9742e34a4f1b6566722a77ee2}{window\+\_\+size\+\_\+}} = 1
+\item 
+double \mbox{\hyperlink{class_niblack_binarization_af7fea4dee01430849fe65c40c3c8a75d}{k\+\_\+}} = 0.\+2
+\item 
+int \mbox{\hyperlink{class_niblack_binarization_aef39e2a4ecdeafa5be0ebeb05da34411}{target\+\_\+row\+\_\+}} = 1
+\item 
+double \mbox{\hyperlink{class_niblack_binarization_af50b5c08a495aa20f6db75c49f6debeb}{scale\+\_\+}} = 1.\+0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Namespace for std\+::filesystem methods. 
+
+A class for calculating, demonstrating and visualizing the threshold value using the Niblack method 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_niblack_binarization_a76f223d7710da9dd7f111ba631650b39}\label{class_niblack_binarization_a76f223d7710da9dd7f111ba631650b39} 
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{NiblackBinarization()}{NiblackBinarization()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Niblack\+Binarization\+::\+Niblack\+Binarization (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default constructor for the Niblack\+Binariation class. 
+
+\Hypertarget{class_niblack_binarization_aab768233493d6be4411ff46ac037a41f}\label{class_niblack_binarization_aab768233493d6be4411ff46ac037a41f} 
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{NiblackBinarization()}{NiblackBinarization()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Niblack\+Binarization\+::\+Niblack\+Binarization (\begin{DoxyParamCaption}\item[{cv\+::\+Mat \&}]{rhs }\end{DoxyParamCaption})}
+
+
+
+Copy constructor for the Niblack\+Binariation class. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cv\+::\+Mat\&} & rhs -\/ input image \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_ac3bf7c8e54fbd51ea1bbae7a88b91a53}\label{class_niblack_binarization_ac3bf7c8e54fbd51ea1bbae7a88b91a53} 
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\index{NiblackBinarization@{NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{NiblackBinarization()}{NiblackBinarization()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Niblack\+Binarization\+::\+Niblack\+Binarization (\begin{DoxyParamCaption}\item[{cv\+::\+Mat \&}]{src,  }\item[{const int}]{window\+\_\+size,  }\item[{const double}]{k,  }\item[{const double \&}]{scale }\end{DoxyParamCaption})}
+
+
+
+Copy constructor for the Niblack\+Binariation class. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cv\+::\+Mat\&} & src -\/ input image \\
+\hline
+\mbox{\texttt{ in}}  & {\em window\+\_\+size,determining} & the window size for the algorithm \\
+\hline
+\mbox{\texttt{ in}}  & {\em k} & -\/ coefficient affecting the threshold value \\
+\hline
+\mbox{\texttt{ in}}  & {\em scale} & -\/ the coefficient with which the graph will be scaled (default = 1) \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_a6fe34d27c38d149527ac3a82a695c519}\label{class_niblack_binarization_a6fe34d27c38d149527ac3a82a695c519} 
+\index{NiblackBinarization@{NiblackBinarization}!````~NiblackBinarization@{\texorpdfstring{$\sim$}{\string~}NiblackBinarization}}
+\index{````~NiblackBinarization@{\texorpdfstring{$\sim$}{\string~}NiblackBinarization}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}NiblackBinarization()}{\string~NiblackBinarization()}}
+{\footnotesize\ttfamily Niblack\+Binarization\+::\texorpdfstring{$\sim$}{\string~}\+Niblack\+Binarization (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Destructor for the Niblack\+Binariation class. 
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_niblack_binarization_a1c4bb4c1a7248bf177c6a1e1f12290b6}\label{class_niblack_binarization_a1c4bb4c1a7248bf177c6a1e1f12290b6} 
+\index{NiblackBinarization@{NiblackBinarization}!check\_the\_image@{check\_the\_image}}
+\index{check\_the\_image@{check\_the\_image}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{check\_the\_image()}{check\_the\_image()}}
+{\footnotesize\ttfamily bool Niblack\+Binarization\+::check\+\_\+the\+\_\+image (\begin{DoxyParamCaption}\item[{cv\+::\+Mat}]{image }\end{DoxyParamCaption})}
+
+
+
+A method that checks the correctness of the image format. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cv\+::\+Mat} & image -\/ input image \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true/false 
+\end{DoxyReturn}
+\Hypertarget{class_niblack_binarization_acb7285b73ae5376fd80ba69f00d21c84}\label{class_niblack_binarization_acb7285b73ae5376fd80ba69f00d21c84} 
+\index{NiblackBinarization@{NiblackBinarization}!demonstrateNiblack@{demonstrateNiblack}}
+\index{demonstrateNiblack@{demonstrateNiblack}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{demonstrateNiblack()}{demonstrateNiblack()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::demonstrate\+Niblack (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{src,  }\item[{int}]{window\+\_\+size,  }\item[{double}]{k,  }\item[{double}]{scale,  }\item[{int}]{selected\+\_\+row,  }\item[{std\+::string}]{executable\+\_\+path }\end{DoxyParamCaption})}
+
+
+
+Method that demonstrates the source and from the binarized image obtained by calling the niblack\+Threshold method. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cv\+::\+Mat\&} & src -\/ input image \\
+\hline
+\mbox{\texttt{ in}}  & {\em window\+\_\+size,determining} & the window size for the algorithm \\
+\hline
+\mbox{\texttt{ in}}  & {\em k} & -\/ coefficient affecting the threshold value \\
+\hline
+\mbox{\texttt{ in}}  & {\em scale} & -\/ the coefficient with which the graph will be scaled (default = 1) \\
+\hline
+\mbox{\texttt{ in}}  & {\em selected\+\_\+row} & -\/ the row for which the visualization will be performed \\
+\hline
+\mbox{\texttt{ in}}  & {\em executable\+\_\+path} & -\/ the path for the executable file to pass what to plot\+Values-\/method for visualization \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_acbe1ff350de887e2729549df8a1303ae}\label{class_niblack_binarization_acbe1ff350de887e2729549df8a1303ae} 
+\index{NiblackBinarization@{NiblackBinarization}!drawGraph@{drawGraph}}
+\index{drawGraph@{drawGraph}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{drawGraph()}{drawGraph()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::draw\+Graph (\begin{DoxyParamCaption}\item[{std\+::ofstream \&}]{file,  }\item[{const std\+::vector$<$ double $>$ \&}]{values,  }\item[{const std\+::string \&}]{color,  }\item[{const std\+::string \&}]{label }\end{DoxyParamCaption})}
+
+
+
+a method that stores the coordinates of points in a .tex file for visualization 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em file} & -\/ file for recording coordinates \\
+\hline
+\mbox{\texttt{ in}}  & {\em values} & -\/ array of coordinates of points \\
+\hline
+\mbox{\texttt{ in}}  & {\em color} & -\/ line color on the chart \\
+\hline
+\mbox{\texttt{ in}}  & {\em label} & -\/ the inscription in the legend of the graph \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_a42f19b0cd0e54f56e31124e8184eeb04}\label{class_niblack_binarization_a42f19b0cd0e54f56e31124e8184eeb04} 
+\index{NiblackBinarization@{NiblackBinarization}!niblackThreshold@{niblackThreshold}}
+\index{niblackThreshold@{niblackThreshold}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{niblackThreshold()}{niblackThreshold()}}
+{\footnotesize\ttfamily cv\+::\+Mat Niblack\+Binarization\+::niblack\+Threshold (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{src,  }\item[{int}]{window\+\_\+size,  }\item[{double}]{k,  }\item[{double \&}]{scale }\end{DoxyParamCaption})}
+
+
+
+Method that performs image binarization using the Niblack method. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cv\+::\+Mat\&} & src -\/ input image \\
+\hline
+\mbox{\texttt{ in}}  & {\em window\+\_\+size,determining} & the window size for the algorithm \\
+\hline
+\mbox{\texttt{ in}}  & {\em k} & -\/ coefficient affecting the threshold value \\
+\hline
+\mbox{\texttt{ in}}  & {\em scale} & -\/ the coefficient with which the graph will be scaled (default = 1) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+cv\+::\+Mat object after binarization 
+\end{DoxyReturn}
+\Hypertarget{class_niblack_binarization_a120cc426c45e49376c99aeca00d6406f}\label{class_niblack_binarization_a120cc426c45e49376c99aeca00d6406f} 
+\index{NiblackBinarization@{NiblackBinarization}!operator=@{operator=}}
+\index{operator=@{operator=}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_niblack_binarization}{Niblack\+Binarization}} \& Niblack\+Binarization\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_niblack_binarization}{Niblack\+Binarization}} \&}]{rhs }\end{DoxyParamCaption})}
+
+
+
+Access operator for the \doxylink{class_niblack_binarization}{Niblack\+Binarization} class. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em rhs} & \doxylink{class_niblack_binarization}{Niblack\+Binarization} -\/ copyied object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_niblack_binarization}{Niblack\+Binarization}\& 
+\end{DoxyReturn}
+\Hypertarget{class_niblack_binarization_aa801992536007b571a92a1d52200e569}\label{class_niblack_binarization_aa801992536007b571a92a1d52200e569} 
+\index{NiblackBinarization@{NiblackBinarization}!plotValues@{plotValues}}
+\index{plotValues@{plotValues}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{plotValues()}{plotValues()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::plot\+Values (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{file\+Path,  }\item[{const std\+::vector$<$ double $>$ \&}]{local\+Intensity,  }\item[{const std\+::vector$<$ double $>$ \&}]{mean\+Values,  }\item[{const std\+::vector$<$ double $>$ \&}]{variance\+Values,  }\item[{const std\+::vector$<$ double $>$ \&}]{threshold\+Values,  }\item[{int}]{selected\+Row }\end{DoxyParamCaption})}
+
+
+
+The method in which the structure of the .tex file is formed, as well as its contents, by calling the draw\+Graph method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Path} & -\/ the path to the executable file next to which the .tex file will be generated \\
+\hline
+{\em local\+Intensity} & -\/ array of vectors with local intensity values \\
+\hline
+{\em mean\+Values} & -\/ array of vectors with mean brightness values \\
+\hline
+{\em variance\+Values} & -\/ array of vectors with standart deviation values \\
+\hline
+{\em threshold\+Values} & -\/ array of threshold value vectors \\
+\hline
+{\em selected\+Row} & -\/ the number of the row selected for visualization \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_a4221833debd01fd6d7cdb59cc9dea085}\label{class_niblack_binarization_a4221833debd01fd6d7cdb59cc9dea085} 
+\index{NiblackBinarization@{NiblackBinarization}!setInputImage@{setInputImage}}
+\index{setInputImage@{setInputImage}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{setInputImage()}{setInputImage()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::set\+Input\+Image (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{image }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+image setter 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em image} & -\/ input image \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_aca96dd4fffc8ed030c91ee3e7ac72ff1}\label{class_niblack_binarization_aca96dd4fffc8ed030c91ee3e7ac72ff1} 
+\index{NiblackBinarization@{NiblackBinarization}!setK@{setK}}
+\index{setK@{setK}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{setK()}{setK()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::setK (\begin{DoxyParamCaption}\item[{double}]{k }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+K setter. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em k} & -\/ coefficient affecting the threshold value \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_a559831165f33e989fa719579142591e2}\label{class_niblack_binarization_a559831165f33e989fa719579142591e2} 
+\index{NiblackBinarization@{NiblackBinarization}!setTargetRow@{setTargetRow}}
+\index{setTargetRow@{setTargetRow}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{setTargetRow()}{setTargetRow()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::set\+Target\+Row (\begin{DoxyParamCaption}\item[{int}]{target\+\_\+row }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+target\+\_\+row setter 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em target\+\_\+row} & -\/ the row for which the visualization will be performed \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_niblack_binarization_a81562124a4890cf5c91310f935dcccdf}\label{class_niblack_binarization_a81562124a4890cf5c91310f935dcccdf} 
+\index{NiblackBinarization@{NiblackBinarization}!setWindowSize@{setWindowSize}}
+\index{setWindowSize@{setWindowSize}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{setWindowSize()}{setWindowSize()}}
+{\footnotesize\ttfamily void Niblack\+Binarization\+::set\+Window\+Size (\begin{DoxyParamCaption}\item[{int}]{window\+\_\+size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+window\+\_\+size setter 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em window\+\_\+size,determining} & the window size for the algorithm \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_niblack_binarization_ad27c66b06843c81f688389d1fcc63e0e}\label{class_niblack_binarization_ad27c66b06843c81f688389d1fcc63e0e} 
+\index{NiblackBinarization@{NiblackBinarization}!image\_@{image\_}}
+\index{image\_@{image\_}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{image\_}{image\_}}
+{\footnotesize\ttfamily cv\+::\+Mat Niblack\+Binarization\+::image\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_niblack_binarization_af7fea4dee01430849fe65c40c3c8a75d}\label{class_niblack_binarization_af7fea4dee01430849fe65c40c3c8a75d} 
+\index{NiblackBinarization@{NiblackBinarization}!k\_@{k\_}}
+\index{k\_@{k\_}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{k\_}{k\_}}
+{\footnotesize\ttfamily double Niblack\+Binarization\+::k\+\_\+ = 0.\+2\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_niblack_binarization_af50b5c08a495aa20f6db75c49f6debeb}\label{class_niblack_binarization_af50b5c08a495aa20f6db75c49f6debeb} 
+\index{NiblackBinarization@{NiblackBinarization}!scale\_@{scale\_}}
+\index{scale\_@{scale\_}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{scale\_}{scale\_}}
+{\footnotesize\ttfamily double Niblack\+Binarization\+::scale\+\_\+ = 1.\+0\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_niblack_binarization_aef39e2a4ecdeafa5be0ebeb05da34411}\label{class_niblack_binarization_aef39e2a4ecdeafa5be0ebeb05da34411} 
+\index{NiblackBinarization@{NiblackBinarization}!target\_row\_@{target\_row\_}}
+\index{target\_row\_@{target\_row\_}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{target\_row\_}{target\_row\_}}
+{\footnotesize\ttfamily int Niblack\+Binarization\+::target\+\_\+row\+\_\+ = 1\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{class_niblack_binarization_aba3f6ae9742e34a4f1b6566722a77ee2}\label{class_niblack_binarization_aba3f6ae9742e34a4f1b6566722a77ee2} 
+\index{NiblackBinarization@{NiblackBinarization}!window\_size\_@{window\_size\_}}
+\index{window\_size\_@{window\_size\_}!NiblackBinarization@{NiblackBinarization}}
+\doxysubsubsection{\texorpdfstring{window\_size\_}{window\_size\_}}
+{\footnotesize\ttfamily int Niblack\+Binarization\+::window\+\_\+size\+\_\+ = 1\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Projects\+\_\+\+C++/\+OOP\+\_\+2023/prj.\+cw/niblack/include/niblack/\mbox{\hyperlink{niblack_8hpp}{niblack.\+hpp}}\item 
+C\+:/\+Projects\+\_\+\+C++/\+OOP\+\_\+2023/prj.\+cw/niblack/\mbox{\hyperlink{niblack_8cpp}{niblack.\+cpp}}\end{DoxyCompactItemize}
