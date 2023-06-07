@@ -144,30 +144,25 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
 
     cv::Mat img_thresh = niblackThreshold(src, window_size, k, scale);
 
-    std::cout << "Binarization is done succesfully!" << std::endl;
+    std::cout << "Binarization is done successfully!" << std::endl;
 
     cv::Mat resized_window;
     cv::resize(src, resized_window, cv::Size(), scale, scale);
 
     cv::Mat highlighted_image;
-
-    cv::cvtColor(resized_window, highlighted_image, cv::COLOR_GRAY2BGR);  // Преобразование изображения в трехканальный формат (BGR)
+    cv::cvtColor(resized_window, highlighted_image, cv::COLOR_GRAY2BGR);
 
     cv::Scalar selected_row_color(0, 0, 255); // Red color for chosen line
-
     int y_selected_row = static_cast<int>(selected_row * scale);
     cv::line(highlighted_image, cv::Point(0, y_selected_row), cv::Point(highlighted_image.cols, y_selected_row), selected_row_color, 2);
 
     fs::path directoryPath = fs::path(executable_path).remove_filename();
-
     fs::path folderPath = directoryPath / "plots";
 
-    // Create the folder if it doesn't exist
     if (!fs::exists(folderPath))
         fs::create_directory(folderPath);
 
-    fs::path imagePath1 = folderPath / "Highlated_image.png";
-
+    fs::path imagePath1 = folderPath / "Highlighted_image.png";
     fs::path imagePath2 = folderPath / "New_image.png";
 
     cv::imwrite(imagePath1.string(), highlighted_image);
@@ -176,14 +171,13 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     cv::imshow("Highlighted Image", highlighted_image);
     cv::imshow("Thresholded Image", img_thresh);
 
-    cv::Mat plot_image(800, 600, CV_8UC3, cv::Scalar(255, 255, 255));
-
     std::vector<double> local_intensity;
     std::vector<double> mean_values;
     std::vector<double> variance_values;
     std::vector<double> threshold_values;
 
     int half_window_size = window_size / 2;
+
     for (int y = half_window_size; y < img_thresh.rows - half_window_size; ++y) {
         double local_inten = 0.0;
         double mean = 0.0;
@@ -191,12 +185,12 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
         double threshold = 0.0;
 
         for (int x = half_window_size; x < img_thresh.cols - half_window_size; ++x) {
-            local_inten += static_cast<double>(src.at<uchar>(y, x)) / 3.0;
+            local_inten += static_cast<double>(resized_window.at<uchar>(y, x)) / 3.0;
 
             double mean_pixel = 0.0;
             for (int j = -half_window_size; j <= half_window_size; ++j) {
                 for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    mean_pixel += static_cast<double>(src.at<uchar>(y + j, x + i)) / 3.0;
+                    mean_pixel += static_cast<double>(resized_window.at<uchar>(y + j, x + i)) / 3.0;
                 }
             }
             mean_pixel /= (window_size * window_size);
@@ -205,21 +199,15 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
             double variance_pixel = 0.0;
             for (int j = -half_window_size; j <= half_window_size; ++j) {
                 for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    double diff = static_cast<double>(src.at<uchar>(y + j, x + i)) / 3.0 - mean_pixel;
+                    double diff = static_cast<double>(resized_window.at<uchar>(y + j, x + i)) / 3.0 - mean_pixel;
                     variance_pixel += diff * diff;
                 }
             }
             variance_pixel /= (window_size * window_size);
             variance += variance_pixel;
 
-            double threshold_pixel = mean_pixel + k * std::sqrt(variance_pixel);
-            threshold += threshold_pixel;
+            threshold = mean_pixel + k * std::sqrt(variance_pixel);
         }
-
-        local_inten /= (img_thresh.cols - 2 * half_window_size);
-        mean /= (img_thresh.cols - 2 * half_window_size);
-        variance /= (img_thresh.cols - 2 * half_window_size);
-        threshold /= (img_thresh.cols - 2 * half_window_size);
 
         local_intensity.push_back(local_inten);
         mean_values.push_back(mean);
