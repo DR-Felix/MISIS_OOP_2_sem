@@ -1,0 +1,5 @@
+add_subdirectory(rational)
+add_subdirectory(arrayd)
+add_subdirectory(matrixs)
+add_subdirectory(arrayt)
+add_subdirectory(geo2d)
