@@ -1,0 +1,170 @@
+#include <iostream>
+
+namespace geo2d {
+	namespace orto {
+		class Quad {
+		public:
+			Quad() = default;
+			Quad(const Quad&) = default;
+			virtual ~Quad() = default;
+
+			virtual void Scale(double alpha) = 0;
+			// virtual void Intersect(const Quad& fig1, const Quad& fig2) = 0;
+			// virtual void Union(const Quad& fig1, const Quad& fig2) = 0;
+		};
+
+		class Rect : public Quad {
+		public:
+			Rect() = default;
+			Rect(const Rect&) = default;
+			~Rect() = default;
+
+			Rect(double x0, double y0, double height, double width) {
+				setXCenter(x0);
+				setYCenter(y0);
+				setHeight(height);
+				setWidth(width);
+			}
+
+			virtual void Scale(double alpha) override;
+			// virtual void Intersect(const Quad& fig1, const Quad& fig2) override;
+			// virtual void Union(const Quad& fig1, const Quad& fig2) override;
+
+			double getXCenter() const {
+				return x_center_;
+			}
+
+			void setXCenter(double x_center) {
+				x_center_ = x_center;
+			}
+
+			double getYCenter() const {
+				return y_center_;
+			}
+
+			void setYCenter(double y_center) {
+				y_center_ = y_center;
+			}
+
+			double getHeight() const {
+				return height_;
+			}
+
+			void setHeight(double height) {
+				height_ = height;
+			}
+
+			double getWidth() const {
+				return width_;
+			}
+
+			void setWidth(double width) {
+				width_ = width;
+			}
+
+		private:
+			double x_center_;
+			double y_center_;
+			double height_;
+			double width_;
+		};
+
+		class Square : public Quad {
+		public:
+			Square() = default;
+			Square(const Square&) = default;
+			~Square() = default;
+
+			Square(double x0, double y0, double height) {
+				setXCenter(x0);
+				setYCenter(y0);
+				setHeight(height);
+				setWidth(height);
+			}
+
+			virtual void Scale(double alpha) override;
+			// virtual void Intersect(const Quad& fig1, const Quad& fig2) override;
+			// virtual void Union(const Quad& fig1, const Quad& fig2) override;
+
+			double getXCenter() const {
+				return x_center_;
+			}
+
+			void setXCenter(double x_center) {
+				x_center_ = x_center;
+			}
+
+			double getYCenter() const {
+				return y_center_;
+			}
+
+			void setYCenter(double y_center) {
+				y_center_ = y_center;
+			}
+
+			double getHeight() const {
+				return height_;
+			}
+
+			void setHeight(double height) {
+				height_ = height;
+				width_ = height;
+			}
+
+			double getWidth() const {
+				return width_;
+			}
+
+		private:
+			double x_center_;
+			double y_center_;
+			double height_;
+			double width_;
+		};
+
+		void Rect::Scale(double alpha) {
+			setHeight(getHeight() * alpha);
+			setWidth(getWidth() * alpha);
+		}
+
+		void Square::Scale(double alpha) {
+			setHeight(getHeight() * alpha);
+			setWidth(getWidth() * alpha);
+		}
+	}
+}
+
+int main() {
+	double x0 = 5.0;
+	double y0 = 5.0;
+	double height = 2.0;
+	double width = 3.0;
+
+	// Constructors
+	geo2d::orto::Rect rectan1;
+	rectan1.setXCenter(x0);
+	rectan1.setYCenter(y0);
+	rectan1.setHeight(height);
+	rectan1.setWidth(width);
+
+	geo2d::orto::Square square1;
+	square1.setXCenter(x0);
+	square1.setYCenter(y0);
+	square1.setHeight(height);
+
+	std::cout << rectan1.getXCenter() << " " << rectan1.getYCenter() << " "
+		<< rectan1.getHeight() << " " << rectan1.getWidth() << std::endl;
+	std::cout << square1.getXCenter() << " " << square1.getYCenter() << " "
+		<< square1.getHeight() << " " << square1.getWidth() << std::endl;
+	std::cout << std::endl;
+
+	geo2d::orto::Rect rectan2(rectan1);
+	geo2d::orto::Square square2(square1);
+
+	std::cout << rectan1.getXCenter() << " " << rectan1.getYCenter() << " "
+		<< rectan1.getHeight() << " " << rectan1.getWidth() << std::endl;
+	std::cout << square1.getXCenter() << " " << square1.getYCenter() << " "
+		<< square1.getHeight() << " " << square1.getWidth() << std::endl;
+
+	return 0;
+}
