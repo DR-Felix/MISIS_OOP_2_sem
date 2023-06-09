@@ -15,11 +15,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
+find_package(OpenCV CONFIG REQUIRED)
+
 if(WIN32)
     set(OpenCV_RUNTIME_PATH "${OpenCV_DIR}/../../bin")
 else()
     set(OpenCV_RUNTIME_PATH "${OpenCV_DIR}/../../lib")
 endif()
+
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/example/images DESTINATION ./bin)
 
 if(NIBLACK_GENERATE_DOCS)
     find_package(Doxygen)
@@ -32,12 +37,13 @@ if(NIBLACK_GENERATE_DOCS)
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
                 COMMENT "Generating API documentation with Doxygen"
                 VERBATIM)
+        install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+DESTINATION ./bin)
     else()
         message(STATUS "Couldn't find Doxygen")
     endif()
 endif()
 
-find_package(OpenCV CONFIG REQUIRED)
 
 if(NIBLACK_INSTALL_TARGET)
     install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
@@ -47,8 +53,69 @@ if(NIBLACK_INSTALL_TARGET)
 
     install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
       DESTINATION bin
-      FILES_MATCHING PATTERN "*libwebpdecoder*"
+      FILES_MATCHING PATTERN "*opencv_highgui4.dll*"
     )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*opencv_core4*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*opencv_imgcodecs4*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*opencv_imgcodecs4*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*opencv_imgproc4*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*jpeg62*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*opencv_videoio4*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*zlib1*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*libwebp*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*libpng16*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*tiff*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*libsharpyuv*"
+    )
+
+    install(DIRECTORY "${OpenCV_RUNTIME_PATH}/"
+      DESTINATION bin
+      FILES_MATCHING PATTERN "*liblzma*"
+    )
+
 endif()
 
 add_subdirectory(niblack)

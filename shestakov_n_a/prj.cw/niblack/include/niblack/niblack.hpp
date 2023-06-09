@@ -33,9 +33,8 @@ public:
     * @param[in] cv::Mat& src матрица, для которой будет применен алгоритм
     * @param[in] window_siz - размер окна, в котором будет происходить бинаризация
     * @param[in] k - коэффициент, влияющий на величину порогового значения
-    * @param[in] scale - коэффициент, с которым будет масштабироваться график (по умолчанию = 1)
     */
-    NiblackBinarization(cv::Mat& src, const int window_size, const double k, const double& scale);
+    NiblackBinarization(cv::Mat& src, const int window_size, const double k);
 
     /**
     * @brief Деструктор для класса NiblackBinariation
@@ -61,21 +60,19 @@ public:
      * @param[in] cv::Mat& src - входное изображение
      * @param[in] window_size - размер области, в котором будет осуществляться бинаризация
      * @param[in] k - коэффициент, влияющий на величину порогового значения
-     * @param[in] scale - коэффициент, с которым будет масштабироваться график (по умолчанию = 1)
      * @return cv::Mat object после бинаризации
      */
-    cv::Mat niblackThreshold(const cv::Mat& src, int window_size, double k, double& scale);
+    cv::Mat niblackThreshold(const cv::Mat& src, int window_size, double k);
 
     /**
      * @brief Метод, осуществляющий демонстрацию исходного и отбинаризованного изображения, полученного с помощью вызова niblackThreshold-метода
      * @param[in] cv::Mat& src - входное изображение
      * @param[in] window_size - размер области, в котором будет осуществляться бинаризация
      * @param[in] k - коэффициент, влияющий на величину порогового значения
-     * @param[in] scale - коэффициент, с которым будет масштабироваться график (по умолчанию = 1)
      * @param[in] selected_row - ряд, для которого будет осуществляться визуализация
      * @param[in] executable_path - путь для исполняемого файла для передачи чего в plotValues-метода для визуализации
      */
-    void demonstrateNiblack(const cv::Mat& src, int window_size, double k, double scale, int selected_row, std::string executable_path);
+    void demonstrateNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string executable_path);
 
     /**
      * @brief метод, сохраняющий координаты точек в .tex-файл для визуализации
@@ -134,7 +131,6 @@ private:
     int window_size_ = 1; /*window_size_ - азмер области, в котором будет осуществляться бинаризация */
     double k_ = 0.2; /*k - коэффициент, влияющий на величину порогового значения*/
     int target_row_ = 1; /*target_row - ряд, для которого будет осуществляться визуализация*/
-    double scale_ = 1.0; /*scale - параметр масштабирования графика (по умолчанию = 1)*/
 };
 
 #endif NIBLACKBINARIZATION_H

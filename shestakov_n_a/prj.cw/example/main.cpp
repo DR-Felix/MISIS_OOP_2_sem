@@ -66,11 +66,10 @@ int main(int argc, char** argv) {
     }
 
     //C:\Projects_C++\OOP_2023\bin.dbg\example.exe prj.cw/example/test4.png 31 -0.5 10
-    //bin.dbg\example.exe example/test5.png 31 -0.5 10
-    //C:\Projects_C++\OOP_2023\prj.cw\bin.dbg\example.exe prj.cw/example/test5.png 31 -0.5 10
-    //C:/Projects_C++/OOP_2023/bin.dbg/course_test.exe "C:\Users\nick_\Downloads\test.png" 31 -0.2 10
+    //bin.dbg\example.exe example/images/test5.png 31 -0.5 10
+    //niblack_example.exe images\test5.png 31 -0.2 10
 
-    niblack.demonstrateNiblack(image, window_size, k, scale, target_row, executable_path);
+    niblack.demonstrateNiblack(image, window_size, k, target_row, executable_path);
 
     return 0;
 }

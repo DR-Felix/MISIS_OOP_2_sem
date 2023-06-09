@@ -5,14 +5,12 @@ NiblackBinarization::NiblackBinarization(cv::Mat& rhs) {
     niblack.window_size_ = 1;
     niblack.k_ = 0.2;
     niblack.target_row_ = 1;
-    niblack.scale_ = 1.0;
 }
 
-NiblackBinarization::NiblackBinarization(cv::Mat& src, const int window_size, const double k, const double& scale) {
+NiblackBinarization::NiblackBinarization(cv::Mat& src, const int window_size, const double k) {
     NiblackBinarization niblack(src);
     niblack.window_size_ = window_size;
     niblack.k_ = k;
-    niblack.scale_ = scale;
 }
 
 void NiblackBinarization::drawGraph(std::ofstream& file, const std::vector<double>& values, const std::string& color, const std::string& label) {
@@ -92,24 +90,18 @@ bool NiblackBinarization::check_the_image(cv::Mat image) {
     return true;
 }
 
-cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_size, double k, double& scale) {
-    double scale_width = static_cast<double>(800) / src.cols;
-    double scale_height = static_cast<double>(600) / src.rows;
-    scale = std::min(scale_width, scale_height);
+cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_size, double k) {
 
-    cv::Mat resized_src;
-    cv::resize(src, resized_src, cv::Size(), scale, scale);
-
-    cv::Mat img_thresh(resized_src.size(), CV_8UC1);
+    cv::Mat img_thresh(src.size(), CV_8UC1);
 
     int half_window_size = window_size / 2;
 
-    for (int y = half_window_size; y < resized_src.rows - half_window_size; ++y) {
-        for (int x = half_window_size; x < resized_src.cols - half_window_size; ++x) {
+    for (int y = half_window_size; y < src.rows - half_window_size; ++y) {
+        for (int x = half_window_size; x < src.cols - half_window_size; ++x) {
             double mean = 0.0;
             for (int j = -half_window_size; j <= half_window_size; ++j) {
                 for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    mean += resized_src.at<uchar>(y + j, x + i);
+                    mean += src.at<uchar>(y + j, x + i);
                 }
             }
             mean /= (window_size * window_size);
@@ -117,7 +109,7 @@ cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_siz
             double std_deviation = 0.0;
             for (int j = -half_window_size; j <= half_window_size; ++j) {
                 for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    double diff = resized_src.at<uchar>(y + j, x + i) - mean;
+                    double diff = src.at<uchar>(y + j, x + i) - mean;
                     std_deviation += diff * diff;
                 }
             }
@@ -125,7 +117,7 @@ cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_siz
 
             double threshold = mean + k * std_deviation;
 
-            if (resized_src.at<uchar>(y, x) > threshold) {
+            if (src.at<uchar>(y, x) > threshold) {
                 img_thresh.at<uchar>(y, x) = 255;
             }
             else {
@@ -133,24 +125,29 @@ cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_siz
             }
         }
     }
-    resized_src.release();
 
     return img_thresh;
 }
 
-void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size, double k, double scale, int selected_row, std::string executable_path) {
+void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string executable_path) {
     
     std::cout << "The image is in the process of binarization, please wait..." << std::endl;
 
-    cv::Mat img_thresh = niblackThreshold(src, window_size, k, scale);
+    cv::Mat img_thresh = niblackThreshold(src, window_size, k);
 
     std::cout << "Binarization is done successfully!" << std::endl;
 
+    std::cout << "The images in the process of demonstartion, please wait..." << std::endl;
+
+    double scale = 1.0;
     cv::Mat resized_window;
     cv::resize(src, resized_window, cv::Size(), scale, scale);
 
     cv::Mat highlighted_image;
-    cv::cvtColor(resized_window, highlighted_image, cv::COLOR_GRAY2BGR);
+    cv::cvtColor(src, highlighted_image, cv::COLOR_GRAY2BGR);
+
+    cv::waitKey(0);
+
 
     cv::Scalar selected_row_color(0, 0, 255); // Red color for chosen line
     int y_selected_row = static_cast<int>(selected_row * scale);
@@ -158,6 +155,8 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
 
     fs::path directoryPath = fs::path(executable_path).remove_filename();
     fs::path folderPath = directoryPath / "plots";
+
+    std::cout << executable_path;
 
     if (!fs::exists(folderPath))
         fs::create_directory(folderPath);
@@ -170,6 +169,8 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
 
     cv::imshow("Highlighted Image", highlighted_image);
     cv::imshow("Thresholded Image", img_thresh);
+
+    std::cout << "Demonstration is done succsessfuly!" << std::endl;
 
     std::vector<double> local_intensity;
     std::vector<double> mean_values;
@@ -236,6 +237,4 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     threshold_values.clear();
 
     img_thresh.release();
-
-    cv::waitKey(0);
 }
