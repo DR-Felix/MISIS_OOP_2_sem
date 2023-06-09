@@ -168,7 +168,7 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     cv::imshow("Highlighted Image", highlighted_image);
     cv::imshow("Thresholded Image", img_thresh);
 
-    int k = cv::waitKey(0);
+    int a = cv::waitKey(0);
     cv::destroyAllWindows();
 
     std::cout << "Demonstration is done succsessfuly!" << std::endl;
