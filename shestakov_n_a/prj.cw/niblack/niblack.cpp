@@ -146,8 +146,6 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     cv::Mat highlighted_image;
     cv::cvtColor(src, highlighted_image, cv::COLOR_GRAY2BGR);
 
-    cv::waitKey(0);
-
 
     cv::Scalar selected_row_color(0, 0, 255); // Red color for chosen line
     int y_selected_row = static_cast<int>(selected_row * scale);
@@ -169,6 +167,9 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
 
     cv::imshow("Highlighted Image", highlighted_image);
     cv::imshow("Thresholded Image", img_thresh);
+
+    int k = cv::waitKey(0);
+    cv::destroyAllWindows();
 
     std::cout << "Demonstration is done succsessfuly!" << std::endl;
 
