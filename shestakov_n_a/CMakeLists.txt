@@ -23,6 +23,9 @@ else()
     set(OpenCV_RUNTIME_PATH "${OpenCV_DIR}/../../lib")
 endif()
 
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/example/images DESTINATION ./bin)
+
 if(NIBLACK_GENERATE_DOCS)
     find_package(Doxygen)
     if(DOXYGEN_FOUND)
@@ -34,6 +37,8 @@ if(NIBLACK_GENERATE_DOCS)
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
                 COMMENT "Generating API documentation with Doxygen"
                 VERBATIM)
+        install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+DESTINATION ./)
     else()
         message(STATUS "Couldn't find Doxygen")
     endif()
