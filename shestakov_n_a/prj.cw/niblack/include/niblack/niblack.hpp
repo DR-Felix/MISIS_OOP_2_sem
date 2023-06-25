@@ -65,14 +65,22 @@ public:
     cv::Mat niblackThreshold(const cv::Mat& src, int window_size, double k);
 
     /**
-     * @brief Метод, осуществляющий демонстрацию исходного и отбинаризованного изображения, полученного с помощью вызова niblackThreshold-метода
+     * @brief Метод, осуществляющий визуализацию алгоритма
      * @param[in] cv::Mat& src - входное изображение
      * @param[in] window_size - размер области, в котором будет осуществляться бинаризация
      * @param[in] k - коэффициент, влияющий на величину порогового значения
      * @param[in] selected_row - ряд, для которого будет осуществляться визуализация
-     * @param[in] executable_path - путь для исполняемого файла для передачи чего в plotValues-метода для визуализации
+     * @param[in] output_path - путь, куда будет сохранено отбинаризованное изображение и график plot.tex с параметрами алгоритма
      */
-    void demonstrateNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string executable_path);
+    void visualizationNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string output_path);
+
+    /**
+     * @brief Метод, сохраняющий изображение в формате file_name.png по пути output_path
+     * @param src - изображение для сохранения в файл
+     * @param output_path - путь, куда будет сохранено изображение
+     * @param file_name - название сохраняемого изображения
+    */
+    void saveTheImage(const cv::Mat& src, std::string output_path, std::string file_name);
 
     /**
      * @brief метод, сохраняющий координаты точек в .tex-файл для визуализации

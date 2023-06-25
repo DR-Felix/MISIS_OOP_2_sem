@@ -2,8 +2,8 @@
 
 NiblackBinarization::NiblackBinarization(cv::Mat& rhs) {
     NiblackBinarization niblack(rhs);
-    niblack.window_size_ = 1;
-    niblack.k_ = 0.2;
+    niblack.window_size_ = 31;
+    niblack.k_ = -0.2;
     niblack.target_row_ = 1;
 }
 
@@ -23,10 +23,8 @@ void NiblackBinarization::drawGraph(std::ofstream& file, const std::vector<doubl
 }
 
 void NiblackBinarization::plotValues(std::filesystem::path file_path, const std::vector<double>& local_intensity, const std::vector<double>& mean_values, const std::vector<double>& variance_values, const std::vector<double>& threshold_values, int selected_row) {
-    
-    fs::path directoryPath = file_path.remove_filename();
 
-    fs::path folderPath = directoryPath / "plots";
+    fs::path folderPath = fs::path(file_path) / "result";
 
     // Create the folder if it doesn't exist
     if (!fs::exists(folderPath))
@@ -91,25 +89,31 @@ bool NiblackBinarization::check_the_image(cv::Mat image) {
 }
 
 cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_size, double k) {
+    std::cout << "The image is in the process of binarization, please wait..." << std::endl;
 
     cv::Mat img_thresh(src.size(), CV_8UC1);
 
     int half_window_size = window_size / 2;
 
-    for (int y = half_window_size; y < src.rows - half_window_size; ++y) {
-        for (int x = half_window_size; x < src.cols - half_window_size; ++x) {
+    for (int y = 0; y < src.rows; ++y) {
+        for (int x = 0; x < src.cols; ++x) {
+            int x_start = std::max(0, x - half_window_size);
+            int x_end = std::min(src.cols - 1, x + half_window_size);
+            int y_start = std::max(0, y - half_window_size);
+            int y_end = std::min(src.rows - 1, y + half_window_size);
+
             double mean = 0.0;
-            for (int j = -half_window_size; j <= half_window_size; ++j) {
-                for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    mean += src.at<uchar>(y + j, x + i);
+            for (int j = y_start; j <= y_end; ++j) {
+                for (int i = x_start; i <= x_end; ++i) {
+                    mean += src.at<uchar>(j, i);
                 }
             }
             mean /= (window_size * window_size);
 
             double std_deviation = 0.0;
-            for (int j = -half_window_size; j <= half_window_size; ++j) {
-                for (int i = -half_window_size; i <= half_window_size; ++i) {
-                    double diff = src.at<uchar>(y + j, x + i) - mean;
+            for (int j = y_start; j <= y_end; ++j) {
+                for (int i = x_start; i <= x_end; ++i) {
+                    double diff = src.at<uchar>(j, i) - mean;
                     std_deviation += diff * diff;
                 }
             }
@@ -126,18 +130,34 @@ cv::Mat NiblackBinarization::niblackThreshold(const cv::Mat& src, int window_siz
         }
     }
 
+    std::cout << "Binarization is done successfully!" << std::endl;
+
     return img_thresh;
 }
 
-void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string executable_path) {
-    
-    std::cout << "The image is in the process of binarization, please wait..." << std::endl;
+void NiblackBinarization::saveTheImage(const cv::Mat& src, std::string output_path, std::string file_name) {
+
+    cv::Mat img_thresh = src;
+
+    std::cout << "The image in the process of saving, please wait..." << std::endl;
+
+    fs::path folderPath = fs::path(output_path) / "result";
+
+    if (!fs::exists(folderPath))
+        fs::create_directory(folderPath);
+
+    fs::path imagePath1 = folderPath / file_name;
+
+    cv::imwrite(imagePath1.string(), img_thresh);
+
+    std::cout << "The image was saved succesfully!" << std::endl;
+}
+
+void NiblackBinarization::visualizationNiblack(const cv::Mat& src, int window_size, double k, int selected_row, std::string output_path) {
 
     cv::Mat img_thresh = niblackThreshold(src, window_size, k);
 
-    std::cout << "Binarization is done successfully!" << std::endl;
-
-    std::cout << "The images in the process of demonstartion, please wait..." << std::endl;
+    std::cout << "The images in the process of visualization, please wait..." << std::endl;
 
     double scale = 1.0;
     cv::Mat resized_window;
@@ -151,16 +171,13 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     int y_selected_row = static_cast<int>(selected_row * scale);
     cv::line(highlighted_image, cv::Point(0, y_selected_row), cv::Point(highlighted_image.cols, y_selected_row), selected_row_color, 2);
 
-    fs::path directoryPath = fs::path(executable_path).remove_filename();
-    fs::path folderPath = directoryPath / "plots";
-
-    std::cout << executable_path;
+    fs::path folderPath = fs::path(output_path) / "result";
 
     if (!fs::exists(folderPath))
         fs::create_directory(folderPath);
 
     fs::path imagePath1 = folderPath / "Highlighted_image.png";
-    fs::path imagePath2 = folderPath / "New_image.png";
+    fs::path imagePath2 = folderPath / "Thresholded_image.png";
 
     cv::imwrite(imagePath1.string(), highlighted_image);
     cv::imwrite(imagePath2.string(), img_thresh);
@@ -171,7 +188,7 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
     int a = cv::waitKey(0);
     cv::destroyAllWindows();
 
-    std::cout << "Demonstration is done succsessfuly!" << std::endl;
+    std::cout << "Visualization is done succsessfuly!" << std::endl;
 
     std::vector<double> local_intensity;
     std::vector<double> mean_values;
@@ -230,7 +247,7 @@ void NiblackBinarization::demonstrateNiblack(const cv::Mat& src, int window_size
         threshold_values[i] /= max_threshold;
     }
 
-    plotValues(executable_path, local_intensity, mean_values, variance_values, threshold_values, selected_row);
+    plotValues(output_path, local_intensity, mean_values, variance_values, threshold_values, selected_row);
 
     local_intensity.clear();
     mean_values.clear();
