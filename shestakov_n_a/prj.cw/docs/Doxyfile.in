@@ -42,7 +42,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = ${PROJECT_NAME}
+PROJECT_NAME           = Niblack_binarization
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -113,7 +113,7 @@ ALLOW_UNICODE_NAMES    = NO
 # Swedish, Turkish, Ukrainian and Vietnamese.
 # The default value is: English.
 
-OUTPUT_LANGUAGE        = Russian
+OUTPUT_LANGUAGE        = English
 
 # If the BRIEF_MEMBER_DESC tag is set to YES, doxygen will include brief member
 # descriptions after the members that are listed in the file and class
@@ -1034,7 +1034,7 @@ FILE_PATTERNS          = *.c \
 # be searched for input files as well.
 # The default value is: NO.
 
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # The EXCLUDE tag can be used to specify files and/or directories that should be
 # excluded from the INPUT source files. This way you can easily exclude a
@@ -2296,6 +2296,10 @@ DOCBOOK_OUTPUT         = docbook
 # The default value is: NO.
 
 GENERATE_AUTOGEN_DEF   = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to Sqlite3 output
+#---------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------
 # Configuration options related to the Perl module output
