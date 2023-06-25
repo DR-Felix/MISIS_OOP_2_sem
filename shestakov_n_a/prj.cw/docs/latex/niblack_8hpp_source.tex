@@ -1,0 +1,68 @@
+\doxysection{niblack.\+hpp}
+\hypertarget{niblack_8hpp_source}{}\label{niblack_8hpp_source}\index{C:/Projects\_C++/OOP\_2023/shestakov\_n\_a/prj.cw/niblack/include/niblack/niblack.hpp@{C:/Projects\_C++/OOP\_2023/shestakov\_n\_a/prj.cw/niblack/include/niblack/niblack.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ NIBLACKBINARIZATION\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ NIBLACKBINARIZATION\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <opencv2/opencv.hpp>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <opencv2/core/utils/logger.hpp>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <filesystem>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{namespace\ }fs\ =\ std::filesystem;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_niblack_binarization}{NiblackBinarization}}\ \{}
+\DoxyCodeLine{00019\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_niblack_binarization_a76f223d7710da9dd7f111ba631650b39}{NiblackBinarization}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_niblack_binarization_aab768233493d6be4411ff46ac037a41f}{NiblackBinarization}}(cv::Mat\&\ rhs);}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{class_niblack_binarization_aeffed008cf41b9ff6aeb1838f7002d86}{NiblackBinarization}}(cv::Mat\&\ src,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ window\_size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ k);}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{class_niblack_binarization_a6fe34d27c38d149527ac3a82a695c519}{\string~NiblackBinarization}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{class_niblack_binarization}{NiblackBinarization}}\&\ \mbox{\hyperlink{class_niblack_binarization_a120cc426c45e49376c99aeca00d6406f}{operator=}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_niblack_binarization}{NiblackBinarization}}\&\ rhs);}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_niblack_binarization_a1c4bb4c1a7248bf177c6a1e1f12290b6}{check\_the\_image}}(cv::Mat\ image);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00065\ \ \ \ \ cv::Mat\ \mbox{\hyperlink{class_niblack_binarization_abefcde6ed16c8252fe2ba9d7f062e126}{niblackThreshold}}(\textcolor{keyword}{const}\ cv::Mat\&\ src,\ \textcolor{keywordtype}{int}\ window\_size,\ \textcolor{keywordtype}{double}\ k);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_ace05ea7a18d783fcaf88e9aa45ab8f52}{visualizationNiblack}}(\textcolor{keyword}{const}\ cv::Mat\&\ src,\ \textcolor{keywordtype}{int}\ window\_size,\ \textcolor{keywordtype}{double}\ k,\ \textcolor{keywordtype}{int}\ selected\_row,\ std::string\ output\_path);}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_a27a5d13f199d3da513bcfcb383ca4922}{saveTheImage}}(\textcolor{keyword}{const}\ cv::Mat\&\ src,\ std::string\ output\_path,\ std::string\ file\_name);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_acbe1ff350de887e2729549df8a1303ae}{drawGraph}}(std::ofstream\&\ file,\ \textcolor{keyword}{const}\ std::vector<double>\&\ values,\ \textcolor{keyword}{const}\ std::string\&\ color,\ \textcolor{keyword}{const}\ std::string\&\ label);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_abe3ae7ea89763ffbf9b813fb33a89111}{plotValues}}(std::filesystem::path\ filePath,\ \textcolor{keyword}{const}\ std::vector<double>\&\ localIntensity,\ \textcolor{keyword}{const}\ std::vector<double>\&\ meanValues,\ \textcolor{keyword}{const}\ std::vector<double>\&\ varianceValues,\ \textcolor{keyword}{const}\ std::vector<double>\&\ thresholdValues,\ \textcolor{keywordtype}{int}\ selectedRow);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_a81562124a4890cf5c91310f935dcccdf}{setWindowSize}}(\textcolor{keywordtype}{int}\ window\_size)\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ window\_size\_\ =\ window\_size;}
+\DoxyCodeLine{00111\ \ \ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_aca96dd4fffc8ed030c91ee3e7ac72ff1}{setK}}(\textcolor{keywordtype}{double}\ k)\ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ k\_\ =\ k;}
+\DoxyCodeLine{00119\ \ \ \ \ \}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_a559831165f33e989fa719579142591e2}{setTargetRow}}(\textcolor{keywordtype}{int}\ target\_row)\ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ target\_row\_\ =\ target\_row;}
+\DoxyCodeLine{00127\ \ \ \ \ \}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_niblack_binarization_a4221833debd01fd6d7cdb59cc9dea085}{setInputImage}}(\textcolor{keyword}{const}\ cv::Mat\&\ image)\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ image\_\ =\ image.clone();}
+\DoxyCodeLine{00135\ \ \ \ \ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00138\ \ \ \ \ cv::Mat\ image\_;\ \textcolor{comment}{/*image\_\ -\/\ входное\ изображение\ */}}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{int}\ window\_size\_\ =\ 1;\ \textcolor{comment}{/*window\_size\_\ -\/\ азмер\ области,\ в\ котором\ будет\ осуществляться\ бинаризация\ */}}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keywordtype}{double}\ k\_\ =\ 0.2;\ \textcolor{comment}{/*k\ -\/\ коэффициент,\ влияющий\ на\ величину\ порогового\ значения*/}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{int}\ target\_row\_\ =\ 1;\ \textcolor{comment}{/*target\_row\ -\/\ ряд,\ для\ которого\ будет\ осуществляться\ визуализация*/}}
+\DoxyCodeLine{00142\ \};}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#endif\ NIBLACKBINARIZATION\_H}}
+
+\end{DoxyCode}
