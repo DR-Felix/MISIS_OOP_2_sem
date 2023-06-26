@@ -1,0 +1,16 @@
+@PACKAGE_INIT@
+
+# Determine the platform library extension
+
+if (TargetPlatform STREQUAL "Windows")
+    set(niblack_LIBRARIES "@CMAKE_INSTALL_PREFIX@/niblack/niblack.lib")
+else()
+    set(niblack_LIBRARIES "@CMAKE_INSTALL_PREFIX@/niblack/niblack.a")
+elseif()
+
+# Additional variables or configurations specific to your library
+
+# Provide imported target (optional)
+add_library(niblack INTERFACE)
+target_include_directories(niblack INTERFACE ${niblack_INCLUDE_DIRS})
+target_link_libraries(niblack INTERFACE ${niblack_LIBRARIES})
