@@ -1,8 +1,8 @@
-# Options to whether build an executable and doxygen or not
 option(SAMPLE "Compile sample program" ON)
 option(DOXYGEN "Enable doxygen documentation" ON)
 
-# Determine the target platform (For library extension identification)
+
+# Determine the target platform
 if(WIN32)
   set(TargetPlatform "Windows")
 elseif(APPLE)
@@ -13,24 +13,40 @@ else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
-# Set the Vcpkg triplet based on the target platform
-if(TargetPlatform STREQUAL "Windows")
-  set(VcpkgTargetTriplet "x64-windows")
-elseif(TargetPlatform STREQUAL "macOS")
-  set(VcpkgTargetTriplet "x64-osx")
-elseif(TargetPlatform STREQUAL "Linux")
-  set(VcpkgTargetTriplet "x64-linux")
+# Determine platform bits
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(PLATFORM_BITNESS "32")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(PLATFORM_BITNESS "64")
+else()
+  message(fatal_error "Unsupported bitness")
 endif()
 
-# Set the path to the Vcpkg toolchain file
-set(VcpkgToolchainFile "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+# Set the Vcpkg triplet based on the target platform
+if(TargetPlatform STREQUAL "Windows")
+  if (PLATFORM_BITNESS STREQUAL "64")
+    set(VcpkgTargetTriplet "x64-windows")
+  else()
+    set(VcpkgTargetTriplet "x32-windows")
+  endif()
+elseif(TargetPlatform STREQUAL "macOS")
+  if (PLATFORM_BITNESS STREQUAL "64")
+    set(VcpkgTargetTriplet "x64-osx")
+  else()
+    set(VcpkgTargetTriplet "x32-osx")
+  endif()
+elseif(TargetPlatform STREQUAL "Linux")
+  if (PLATFORM_BITNESS STREQUAL "64")
+    set(VcpkgTargetTriplet "x64-linux")
+  else()
+    set(VcpkgTargetTriplet "x32-linux")
+  endif()
+endif()
 
 # Print the platform and compiler information
 message(STATUS "Target Platform: ${TargetPlatform}")
+message(STATUS "Platform bitness: ${PLATFORM_BITNESS}")
 message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER}")
 message(STATUS "Vcpkg Target Triplet: ${VcpkgTargetTriplet}")
 message(STATUS "Vcpkg Toolchain File: ${VcpkgToolchainFile}")
-
-# Configure the project using the Vcpkg toolchain file
-set(CMAKE_TOOLCHAIN_FILE ${VcpkgToolchainFile} CACHE STRING "")
