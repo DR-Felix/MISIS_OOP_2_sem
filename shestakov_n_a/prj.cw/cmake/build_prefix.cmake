@@ -13,18 +13,6 @@ else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
-# Set the default cross-compiler based on the target platform
-if(TargetPlatform STREQUAL "Windows")
-  set(CMAKE_C_COMPILER "x86_64-w64-mingw32-gcc")
-  set(CMAKE_CXX_COMPILER "x86_64-w64-mingw32-g++")
-elseif(TargetPlatform STREQUAL "macOS")
-  set(CMAKE_C_COMPILER "/usr/bin/clang")
-  set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-elseif(TargetPlatform STREQUAL "Linux")
-  set(CMAKE_C_COMPILER "/usr/bin/gcc")
-  set(CMAKE_CXX_COMPILER "/usr/bin/g++")
-endif()
-
 # Set the Vcpkg triplet based on the target platform
 if(TargetPlatform STREQUAL "Windows")
   set(VcpkgTargetTriplet "x64-windows")
