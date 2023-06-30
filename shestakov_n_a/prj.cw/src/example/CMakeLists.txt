@@ -6,7 +6,7 @@ target_link_libraries(niblack_example PRIVATE ${OpenCV_LIBS})
 
 # Set the include directories for hoglib headers
 target_include_directories(niblack_example PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/niblack/include
+    ${CMAKE_SOURCE_DIR}/prj.cw/src/niblack/include/
 )
 
 #Define a constant variable for main.cpp code
